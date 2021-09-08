@@ -37,7 +37,7 @@ export const signUp = async (user) => {
         });
 
         if (res.status !== 201)
-            return res;
+            throw res;
     
         const data = await res.json();
 
@@ -66,6 +66,30 @@ export const logout = async (token, all = false) => {
 
         return {
             data: 'Logged Out !'
+        };
+    } catch (error) {
+        return {
+            error
+        };
+    }
+}
+
+export const getAvatar = async (userId, token) => {
+    try {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/users/${userId}/avatar`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (res.status !== 200)
+            throw res;
+
+        const data = await res.blob();
+
+        return {
+            data
         };
     } catch (error) {
         return {

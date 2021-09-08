@@ -7,10 +7,11 @@ import { FormUtil, Form } from '../shared/Formutil';
 import { signUp } from '../../service/auth.service';
 import { updateAuth } from '../../state-management/actions/Auth.actions';
 import { updateLoginPopUpState, updateSignUpPopUpState } from '../../state-management/actions/AuthPopUp.actions';
+import { updateNotificationState } from '../../state-management/actions/Notification.actions';
 
 import Controls from '../controls/Controls';
 
-function Login({ notify, setNotify }) {
+function SignUp() {
 
     const styles = signUpStyles();
 
@@ -48,11 +49,11 @@ function Login({ notify, setNotify }) {
         console.log('user', user);
         const { data, error } = await signUp(user);
         if (data) {
-            setNotify({
+            dispatch(updateNotificationState({
                 isOpen: true,
                 message: 'Sign Up Successful !',
                 type: 'success'
-            });
+            }));
             dispatch(updateAuth(data));
             dispatch(updateSignUpPopUpState(false));
         } else if (error) {
@@ -65,9 +66,9 @@ function Login({ notify, setNotify }) {
                 notification.message = 'Sign Up Failed !';
             else
                 notification.message = 'Internal Server Error !!!';
-            setNotify({
+            dispatch(updateNotificationState({
                 ...notification
-            });
+            }));
         }
     }
 
@@ -136,4 +137,4 @@ const initialValues = {
     age: 24
 }
 
-export default Login;
+export default SignUp;

@@ -1,5 +1,4 @@
 import './App.css';
-import { useState } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider } from '@mui/private-theming';
@@ -10,12 +9,6 @@ import Notification from '../component/shared/Notification';
 
 function App() {
 
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: '',
-    type: ''
-  });
-
   return (
     <div className="container">
       <Background />
@@ -24,10 +17,7 @@ function App() {
           <Router>
             <Switch>
               <Route exact path='/'>
-                <Header 
-                  notify={notify}
-                  setNotify={setNotify}
-                />
+                <Header />
                 Hiii
                 <CssBaseline />
               </Route>
@@ -36,10 +26,7 @@ function App() {
               </Route>
             </Switch>
           </Router>
-          <Notification
-            notify={notify}
-            setNotify={setNotify}
-          />
+          <Notification />
         </ThemeProvider>
       </div>
     </div>

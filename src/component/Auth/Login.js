@@ -7,10 +7,11 @@ import { FormUtil, Form } from '../shared/Formutil';
 import { login } from '../../service/auth.service';
 import { updateAuth } from '../../state-management/actions/Auth.actions';
 import { updateLoginPopUpState, updateSignUpPopUpState } from '../../state-management/actions/AuthPopUp.actions';
+import { updateNotificationState } from '../../state-management/actions/Notification.actions';
 
 import Controls from '../controls/Controls';
 
-function Login({ notify, setNotify }) {
+function Login() {
 
     const styles = loginStyles();
 
@@ -33,11 +34,11 @@ function Login({ notify, setNotify }) {
         e.preventDefault();
         const { data, error } = await login(values.email, values.password);
         if (data) {
-            setNotify({
+            dispatch(updateNotificationState({
                 isOpen: true,
-                message: 'Logged In !',
+                message: 'Logged In Successfully !',
                 type: 'success'
-            });
+            }));
             dispatch(updateAuth(data));
             dispatch(updateLoginPopUpState(false));
         } else if (error) {
@@ -50,9 +51,9 @@ function Login({ notify, setNotify }) {
                 notification.message = 'Invalid Credentials !';
             else
                 notification.message = 'Internal Server Error !!!';
-            setNotify({
+            dispatch(updateNotificationState({
                 ...notification
-            });
+            }));
         }
     }
 

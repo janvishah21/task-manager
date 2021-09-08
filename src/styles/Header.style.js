@@ -28,6 +28,13 @@ export const headerStyles = makeStyles(() => ({
         color: 'white'
       },
     },
+    avatar: {
+      maxWidth: '30px',
+      maxHeight: '30px',
+      margin: '0 10px',
+      borderRadius: '50%',
+      cursor: 'pointer'
+    },
     logout: {
       color: '#ccc',
       display: 'grid',
