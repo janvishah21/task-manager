@@ -3,6 +3,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider } from '@mui/private-theming';
 import Header from '../component/Header';
+import Footer from '../component/Footer';
 import Background from './Background';
 import { customTheme } from '../styles/theme';
 import Notification from '../component/shared/Notification';
@@ -20,6 +21,7 @@ function App() {
               <Route exact path='/'>
                 <Header />
                 <PageContent />
+                <Footer />
                 <CssBaseline />
               </Route>
               <Route path='*'>

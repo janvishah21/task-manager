@@ -17,6 +17,10 @@ export const headerStyles = makeStyles(() => ({
       cursor: 'pointer',
       textDecoration: 'none',
     },
+    version: {
+      color: 'skyblue',
+      padding: '0 10px'
+    },
     logo: {
       marginRight: '10px'
     },

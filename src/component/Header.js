@@ -89,6 +89,13 @@ function Header() {
                 </Typography>
             </Toolbar>
             <Toolbar className={styles.navItems}>
+                <Tooltip 
+                    title="Release Version"
+                >
+                    <Typography
+                        className={styles.version}
+                    >v1.1</Typography>
+                </Tooltip>
                 {
                     user.token ? 
                         <>
