@@ -7,7 +7,11 @@ export const headerStyles = makeStyles(() => ({
       zIndex: 3,
       color: 'white',
       userSelect: 'none',
-      alignItems: 'center'
+      alignItems: 'center',
+      borderBottom: '1px solid grey',
+      '&:hover': {
+        boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+      }
     },
     title: {
       cursor: 'pointer',

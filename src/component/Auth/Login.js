@@ -36,7 +36,7 @@ function Login() {
         if (data) {
             dispatch(updateNotificationState({
                 isOpen: true,
-                message: 'Logged In Successfully !',
+                message: 'Welcome Back 😄',
                 type: 'success'
             }));
             dispatch(updateAuth(data));
@@ -48,9 +48,9 @@ function Login() {
                 type: 'error'
             };
             if (error.status === 400)
-                notification.message = 'Invalid Credentials !';
+                notification.message = 'Invalid Credentials, Please Try Again !';
             else
-                notification.message = 'Internal Server Error !!!';
+                notification.message = 'Internal Server Error 😕';
             dispatch(updateNotificationState({
                 ...notification
             }));

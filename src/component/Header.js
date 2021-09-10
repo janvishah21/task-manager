@@ -6,6 +6,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Tooltip from '@mui/material/Tooltip';
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
 import Zoom from '@mui/material/Zoom';
+import { deepOrange } from '@mui/material/colors';
+import Avatar from '@mui/material/Avatar';
 import { headerStyles } from '../styles/Header.style';
 import Popup from './shared/Popup';
 import Login from './Auth/Login';
@@ -15,18 +17,15 @@ import { updateAuth } from '../state-management/actions/Auth.actions';
 import { updateLoginPopUpState, updateSignUpPopUpState } from '../state-management/actions/AuthPopUp.actions';
 import { logout, getAvatar } from '../service/auth.service';
 import { updateNotificationState } from '../state-management/actions/Notification.actions';
-import defProfile from '../assets/profile.jpeg';
 
 function Header() {
 
     const styles = headerStyles();
 
     const [profileAvatar, setProfileAvatar] = useState();
-
+    
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth);
-    const avatar = useSelector(state => state.auth.avatar);
-    // const pageContentState = useSelector(state => state.pageContentState);
     const authPopUpState = useSelector(state => state.authPopUp);
 
     useEffect(() => {
@@ -45,6 +44,8 @@ function Header() {
         getMyAvatar();
     }, [user]);
 
+    const getFirstLetter = (name) => name && name.length ? name.toUpperCase()[0] : '';
+
     const handleLogout = async (all = false) => {
         // return dispatch(updateAuth({}));
         const { data, error } = await logout(user.token, all);
@@ -53,7 +54,7 @@ function Header() {
             dispatch(updateAuth({}));
             dispatch(updateNotificationState({
                 isOpen: true,
-                message: 'Logged Out Successfully !',
+                message: 'See You Soon 🙂',
                 type: 'success'
             }));
         } else if (error) {
@@ -63,12 +64,12 @@ function Header() {
                 type: 'error'
             };
             if (error.status === 401)
-                notification.message = 'Please Log In first :)';
+                notification.message = 'You Need to Log In first 🙂';
             else
-                notification.message = 'Internal Server Error !!!';
-                dispatch(updateNotificationState({
-                    ...notification
-                }));
+                notification.message = 'Internal Server Error 😕';
+            dispatch(updateNotificationState({
+                ...notification
+            }));
         }
     }
 
@@ -97,7 +98,11 @@ function Header() {
                                 arrow
                                 leaveDelay={400}
                             >
-                                <img src={profileAvatar ?? defProfile} className={styles.avatar}/>
+                                {
+                                    profileAvatar ? 
+                                        <img src={profileAvatar} className={styles.avatar}/> : 
+                                        <Avatar className={styles.avatar} sx={{ bgcolor: deepOrange[500] }}>{getFirstLetter(user.user.name)}</Avatar>
+                                }
                             </Tooltip>
                             <span 
                                 className={styles.logout}

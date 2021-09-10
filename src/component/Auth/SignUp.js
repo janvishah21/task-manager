@@ -51,7 +51,7 @@ function SignUp() {
         if (data) {
             dispatch(updateNotificationState({
                 isOpen: true,
-                message: 'Sign Up Successful !',
+                message: 'Welcome 😁',
                 type: 'success'
             }));
             dispatch(updateAuth(data));
@@ -65,7 +65,7 @@ function SignUp() {
             if (error.status === 400)
                 notification.message = 'Sign Up Failed !';
             else
-                notification.message = 'Internal Server Error !!!';
+                notification.message = 'Internal Server Error 😕';
             dispatch(updateNotificationState({
                 ...notification
             }));

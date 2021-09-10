@@ -6,6 +6,7 @@ import Header from '../component/Header';
 import Background from './Background';
 import { customTheme } from '../styles/theme';
 import Notification from '../component/shared/Notification';
+import PageContent from '../component/PageContent';
 
 function App() {
 
@@ -18,7 +19,7 @@ function App() {
             <Switch>
               <Route exact path='/'>
                 <Header />
-                Hiii
+                <PageContent />
                 <CssBaseline />
               </Route>
               <Route path='*'>
