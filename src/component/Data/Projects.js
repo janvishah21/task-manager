@@ -69,7 +69,7 @@ function Projects() {
         }
     ], []);
 
-    const defaultColDef = useMemo( ()=> ({
+    const defaultColDef = useMemo(()=> ({
         resizable: true,
         sortable: true
     }), []);
