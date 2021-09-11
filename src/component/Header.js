@@ -5,6 +5,9 @@ import Typography from '@mui/material/Typography';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Tooltip from '@mui/material/Tooltip';
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
+import IconButton from '@mui/material/IconButton';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import Zoom from '@mui/material/Zoom';
 import { deepOrange } from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
@@ -32,6 +35,7 @@ function Header() {
     });
     
     const dispatch = useDispatch();
+    const pageContentState = useSelector(state => state.pageContentState);
     const user = useSelector(state => state.auth);
     const authPopUpState = useSelector(state => state.authPopUp);
     const releases = useSelector(state => state.releases);
@@ -113,20 +117,51 @@ function Header() {
                 >
                     Task Manager
                 </Typography>
-            </Toolbar>
-            <Toolbar className={styles.navItems}>
                 <Tooltip 
                     title={latestRelease.description}
                 >
                     <Typography
                         className={styles.version}
+                        fontWeight="bold"
                     >v{latestRelease.version}</Typography>
                 </Tooltip>
+            </Toolbar>
+            <Toolbar className={styles.navItems}>
                 {
                     user.token ? 
                         <>
+                            { 
+                                pageContentState === 'projects' ? 
+                                    <Tooltip
+                                        title="Received Access Requesrs"
+                                        arrow
+                                    >
+                                        <IconButton
+                                            onClick={() => dispatch(updatePageContentState('received-access-requests'))}
+                                        >
+                                            <PlaylistAddIcon 
+                                                className={styles.iconBtn}
+                                            />
+                                        </IconButton>
+                                    </Tooltip> : ''
+                            }
+                            { 
+                                pageContentState === 'received-access-requests' ?
+                                    <Tooltip
+                                        title="Projects"
+                                        arrow
+                                    >
+                                        <IconButton 
+                                            onClick={() => dispatch(updatePageContentState('projects'))}
+                                        >
+                                            <AccountTreeIcon 
+                                                className={styles.iconBtn}
+                                            />
+                                        </IconButton>
+                                    </Tooltip> : ''
+                            }
                             <Tooltip 
-                                title={`${user.user.name}`}
+                                title={`${user.user.name} (${user.user._id.toUpperCase()})`}
                                 TransitionComponent={Zoom}
                                 arrow
                                 leaveDelay={400}

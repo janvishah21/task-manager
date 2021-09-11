@@ -121,7 +121,6 @@ function SignUp() {
                     type="submit"
                     endIcon={<PersonAddAlt1Icon />}
                     loading={loading}
-                    loadingPosition="end"
                     variant="contained"
                 >
                     Sign Up

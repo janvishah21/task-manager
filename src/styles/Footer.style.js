@@ -9,7 +9,8 @@ export const footerStyles = makeStyles(() => ({
     bottom: '0',
     left: '0',
     textAlign: 'center',
-    userSelect: 'none'
+    userSelect: 'none',
+    whiteSpace: 'nowrap'
   },
   appInfo: {
     textAlign: 'left'

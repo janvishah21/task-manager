@@ -19,7 +19,10 @@ export const headerStyles = makeStyles(() => ({
     },
     version: {
       color: '#80ffff',
-      padding: '0 10px'
+      padding: '0 20px'
+    },
+    iconBtn: {
+      color: 'white'
     },
     logo: {
       marginRight: '10px'

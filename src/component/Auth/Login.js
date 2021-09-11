@@ -85,7 +85,6 @@ function Login() {
                     type="submit"
                     endIcon={<LoginIcon />}
                     loading={loading}
-                    loadingPosition="end"
                     variant="contained"
                 >
                     Log In
