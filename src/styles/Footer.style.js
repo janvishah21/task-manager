@@ -12,7 +12,7 @@ export const footerStyles = makeStyles(() => ({
     userSelect: 'none'
   },
   appInfo: {
-      textAlign: 'left'
+    textAlign: 'left'
   },
   authorName: {
     color: 'white',

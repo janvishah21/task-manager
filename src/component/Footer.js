@@ -18,7 +18,9 @@ function Footer() {
                 <Toolbar>
                     <Grid container>
                         <Grid item xs={4}>
-                            <Typography className={styles.appInfo}>
+                            <Typography 
+                                className={styles.appInfo}
+                            >
                                 Developed by 
                                 <Link href={AUTHOR_LINKEDIN_URL} style={{textDecoration: 'none'}} target="_blank">
                                     <span className={styles.authorName}>{AUTHOR_NAME}</span>

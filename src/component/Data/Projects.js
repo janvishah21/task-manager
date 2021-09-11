@@ -11,9 +11,9 @@ import Typography from '@mui/material/Typography';
 import { AgGridReact } from 'ag-grid-react';
 import { projectsStyles } from '../../styles/Projects.style';
 import { getProjects } from '../../service/project.service';
-import { userIdFormatter, timeFormatter } from '../../grid/formatters';
+import TimeRenderer from '../shared/grid/cell-renderers/TimeRenderer';
+import { userObjectFormatter } from '../shared/grid/formatters';
 import { updateNotificationState } from '../../state-management/actions/Notification.actions';
-import { updateAuth } from '../../state-management/actions/Auth.actions';
 
 function Projects() {
 
@@ -41,14 +41,22 @@ function Projects() {
         getAllProjects();
     }, []);
 
-    const modules = useMemo( ()=> [ClientSideRowModelModule, RangeSelectionModule, RowGroupingModule, RichSelectModule], []);
+    const modules = useMemo( ()=> [
+        ClientSideRowModelModule, 
+        RangeSelectionModule, 
+        RowGroupingModule, 
+        RichSelectModule], []);
+
+    const frameworkComponents = {
+        timeRenderer: TimeRenderer
+    };
 
     const columnDefs = useMemo(() => [
         {
             field: 'updatedAt',
             headerName: 'Updated At',
-            width: 250,
-            valueFormatter: timeFormatter,
+            width: 260,
+            cellRenderer: 'timeRenderer',
             sort: 'desc'
         },
         {
@@ -59,11 +67,13 @@ function Projects() {
             field: 'name'
         },
         {
-            field: 'description'
+            field: 'description',
+            width: 300
         },
         {
             field: 'owner',
-            valueFormatter: userIdFormatter
+            headerName: 'Owner',
+            valueFormatter: userObjectFormatter
         }
     ], []);
 
@@ -87,6 +97,7 @@ function Projects() {
                 reactUi="true"
                 className="ag-theme-alpine"
                 modules={modules}
+                frameworkComponents={frameworkComponents}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
                 rowData={rowData}

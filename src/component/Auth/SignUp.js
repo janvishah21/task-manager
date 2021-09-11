@@ -46,7 +46,6 @@ function SignUp() {
             ...values
         };
         delete user.confirm_password;
-        console.log('user', user);
         const { data, error } = await signUp(user);
         if (data) {
             dispatch(updateNotificationState({

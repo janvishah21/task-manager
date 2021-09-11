@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Tooltip from '@mui/material/Tooltip';
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
+import LinearProgress from '@mui/material/LinearProgress';
 import Zoom from '@mui/material/Zoom';
 import { deepOrange } from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
@@ -25,9 +26,13 @@ function Header() {
     const styles = headerStyles();
 
     const [profileAvatar, setProfileAvatar] = useState();
-    const [latestRelease, setLatestRelease] = useState({});
+    const [latestRelease, setLatestRelease] = useState({
+        version: '',
+        description: ''
+    });
     
     const dispatch = useDispatch();
+    const loader = useSelector(state => state.loader);
     const user = useSelector(state => state.auth);
     const authPopUpState = useSelector(state => state.authPopUp);
     const releases = useSelector(state => state.releases);
@@ -94,93 +99,98 @@ function Header() {
     }
 
     return (
-        <div className={styles.root}>
-            <Toolbar 
-                className={styles.title}
-                onClick={() => dispatch(updatePageContentState('projects'))}
-            >
-                <TaskAltOutlinedIcon fontSize="large" className={styles.logo}/>
-                <Typography 
-                    variant="h5"
-                    fontWeight="fontWeightBold"
-                    fontSize="h5.fontSize"
+        <>
+            {
+                loader ? <LinearProgress color="secondary" /> : ''
+            }
+            <div className={styles.root}>
+                <Toolbar 
+                    className={styles.title}
+                    onClick={() => dispatch(updatePageContentState('projects'))}
                 >
-                    Task Manager
-                </Typography>
-            </Toolbar>
-            <Toolbar className={styles.navItems}>
-                <Tooltip 
-                    title={latestRelease.description}
-                >
-                    <Typography
-                        className={styles.version}
-                    >v{latestRelease.version}</Typography>
-                </Tooltip>
-                {
-                    user.token ? 
-                        <>
-                            <Tooltip 
-                                title={`${user.user.name}`}
-                                TransitionComponent={Zoom}
-                                arrow
-                                leaveDelay={400}
-                            >
-                                {
-                                    profileAvatar ? 
-                                        <img src={profileAvatar} className={styles.avatar}/> : 
-                                        <Avatar className={styles.avatar} sx={{ bgcolor: deepOrange[500] }}>{getFirstLetter(user.user.name)}</Avatar>
-                                }
-                            </Tooltip>
-                            <span 
-                                className={styles.logout}
-                                onClick={() => handleLogout()}
-                            >
+                    <TaskAltOutlinedIcon fontSize="large" className={styles.logo}/>
+                    <Typography 
+                        variant="h5"
+                        fontWeight="fontWeightBold"
+                        fontSize="h5.fontSize"
+                    >
+                        Task Manager
+                    </Typography>
+                </Toolbar>
+                <Toolbar className={styles.navItems}>
+                    <Tooltip 
+                        title={latestRelease.description}
+                    >
+                        <Typography
+                            className={styles.version}
+                        >v{latestRelease.version}</Typography>
+                    </Tooltip>
+                    {
+                        user.token ? 
+                            <>
+                                <Tooltip 
+                                    title={`${user.user.name}`}
+                                    TransitionComponent={Zoom}
+                                    arrow
+                                    leaveDelay={400}
+                                >
+                                    {
+                                        profileAvatar ? 
+                                            <img src={profileAvatar} className={styles.avatar}/> : 
+                                            <Avatar className={styles.avatar} sx={{ bgcolor: deepOrange[500] }}>{getFirstLetter(user.user.name)}</Avatar>
+                                    }
+                                </Tooltip>
+                                <span 
+                                    className={styles.logout}
+                                    onClick={() => handleLogout()}
+                                >
+                                    <Typography 
+                                        className={styles.navItem}
+                                        fontWeight="fontWeightBold"
+                                    >
+                                        Log Out
+                                    </Typography>
+                                    <LogoutIcon />
+                                </span>
+                            </>
+                        :   <>
                                 <Typography 
                                     className={styles.navItem}
                                     fontWeight="fontWeightBold"
+                                    onClick={() => dispatch(updateLoginPopUpState(true))}
                                 >
-                                    Log Out
+                                    Log In
                                 </Typography>
-                                <LogoutIcon />
-                            </span>
-                        </>
-                    :   <>
-                            <Typography 
-                                className={styles.navItem}
-                                fontWeight="fontWeightBold"
-                                onClick={() => dispatch(updateLoginPopUpState(true))}
-                            >
-                                Log In
-                            </Typography>
-                            <Typography 
-                                className={styles.navItem}
-                                fontWeight="fontWeightBold"
-                                onClick={() => dispatch(updateSignUpPopUpState(true))}
-                            >
-                                Sign Up
-                            </Typography>
-                        </>
-                }
-            </Toolbar>
-            <Popup 
-                title="Log In"
-                fullWidth={true}
-                showAppTitle={true}
-                openPopup={authPopUpState.loginPopUp}
-                onClose={() => dispatch(updateLoginPopUpState(false))}
-            >
-                <Login />
-            </Popup>
-            <Popup 
-                title="Sign Up"
-                fullWidth={true}
-                showAppTitle={true}
-                openPopup={authPopUpState.signUpPopUp}
-                onClose={() => dispatch(updateSignUpPopUpState(false))}
-            >
-                <SignUp />
-            </Popup>
-        </div>
+                                <Typography 
+                                    className={styles.navItem}
+                                    fontWeight="fontWeightBold"
+                                    onClick={() => dispatch(updateSignUpPopUpState(true))}
+                                >
+                                    Sign Up
+                                </Typography>
+                            </>
+                    }
+                </Toolbar>
+                <Popup 
+                    title="Log In"
+                    fullWidth={true}
+                    showAppTitle={true}
+                    openPopup={authPopUpState.loginPopUp}
+                    onClose={() => dispatch(updateLoginPopUpState(false))}
+                >
+                    <Login />
+                </Popup>
+                <Popup 
+                    title="Sign Up"
+                    fullWidth={true}
+                    showAppTitle={true}
+                    openPopup={authPopUpState.signUpPopUp}
+                    onClose={() => dispatch(updateSignUpPopUpState(false))}
+                >
+                    <SignUp />
+                </Popup>
+            </div>
+        </>
     )
 }
 
