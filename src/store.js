@@ -19,7 +19,8 @@ const store = createStore(
 store.subscribe(() => {
     saveState({
         pageContentState: store.getState().pageContentState,
-        auth: store.getState().auth
+        auth: store.getState().auth,
+        releases: store.getState().releases
     });
 });
 

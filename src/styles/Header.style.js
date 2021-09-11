@@ -18,7 +18,7 @@ export const headerStyles = makeStyles(() => ({
       textDecoration: 'none',
     },
     version: {
-      color: 'skyblue',
+      color: '#80ffff',
       padding: '0 10px'
     },
     logo: {

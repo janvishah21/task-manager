@@ -6,7 +6,7 @@ import { updateNotificationState } from '../../state-management/actions/Notifica
 
 function Notification() {
 
-    const classes = notificationStyles();
+    const styles = notificationStyles();
 
     const dispatch = useDispatch();
     const notify = useSelector(state => state.notification);
@@ -23,9 +23,9 @@ function Notification() {
 
     return (
         <Snackbar
-            className={classes.root}
+            className={styles.root}
             open={notify.isOpen}
-            autoHideDuration={3000}
+            autoHideDuration={800000}
             anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
             onClose={handleClose}>
             <Alert

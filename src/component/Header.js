@@ -16,17 +16,21 @@ import { updatePageContentState } from '../state-management/actions/PageContentS
 import { updateAuth } from '../state-management/actions/Auth.actions';
 import { updateLoginPopUpState, updateSignUpPopUpState } from '../state-management/actions/AuthPopUp.actions';
 import { logout, getAvatar } from '../service/auth.service';
+import { getReleases } from '../service/release.service';
 import { updateNotificationState } from '../state-management/actions/Notification.actions';
+import { updateReleases } from '../state-management/actions/Release.actions';
 
 function Header() {
 
     const styles = headerStyles();
 
     const [profileAvatar, setProfileAvatar] = useState();
+    const [latestRelease, setLatestRelease] = useState({});
     
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth);
     const authPopUpState = useSelector(state => state.authPopUp);
+    const releases = useSelector(state => state.releases);
 
     useEffect(() => {
         const getMyAvatar = async () => {
@@ -41,7 +45,23 @@ function Header() {
                 }
             }
         }
+        const getAppReleases = async () => {
+            if (releases.length > 0)
+                setLatestRelease(releases.slice(-1)[0]);
+            const { data, error } = await getReleases();
+            if (!error) {
+                try {
+                    if (data.length > 0) {
+                        setLatestRelease(data.slice(-1)[0]);
+                        dispatch(updateReleases(data));
+                    }
+                } catch (e) {
+                    // ignore
+                }
+            }
+        }
         getMyAvatar();
+        getAppReleases();
     }, [user]);
 
     const getFirstLetter = (name) => name && name.length ? name.toUpperCase()[0] : '';
@@ -90,11 +110,11 @@ function Header() {
             </Toolbar>
             <Toolbar className={styles.navItems}>
                 <Tooltip 
-                    title="Release Version"
+                    title={latestRelease.description}
                 >
                     <Typography
                         className={styles.version}
-                    >v1.1</Typography>
+                    >v{latestRelease.version}</Typography>
                 </Tooltip>
                 {
                     user.token ? 

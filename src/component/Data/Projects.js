@@ -34,8 +34,6 @@ function Projects() {
                     message: error.message,
                     type: 'error'
                 }));
-                if (error.message.includes('expired'))
-                    dispatch(updateAuth({}));
             } else {
                 setRowData(data || []);
             }
