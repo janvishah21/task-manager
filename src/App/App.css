@@ -12,3 +12,16 @@
 .page-content {
   position: relative;
 }
+
+.loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.main-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}

@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import LoadingButton from '@mui/lab/LoadingButton';
 import Typography from '@mui/material/Typography';
 import { signUpStyles } from '../../styles/SignUp.style';
 import { FormUtil, Form } from '../shared/Formutil';
@@ -16,6 +17,8 @@ function SignUp() {
     const styles = signUpStyles();
 
     const dispatch = useDispatch();
+
+    const [loading, setLoading] = useState(false);
 
     const validate = (fieldValues = values) => {
         let temp = { ...errors };
@@ -41,6 +44,7 @@ function SignUp() {
     } = FormUtil(initialValues, true, validate);
 
     const handleSubmit = async (e) => {
+        setLoading(true);
         e.preventDefault();
         const user = {
             ...values
@@ -69,6 +73,7 @@ function SignUp() {
                 ...notification
             }));
         }
+        setLoading(false);
     }
 
     return (
@@ -111,11 +116,16 @@ function SignUp() {
                     min="10"
                     onChange={handleInputChange}
                 />
-                <Controls.Button
+                <LoadingButton
                     className={styles.submitBtn}
                     type="submit"
                     endIcon={<PersonAddAlt1Icon />}
-                    text="Sign Up" />
+                    loading={loading}
+                    loadingPosition="end"
+                    variant="contained"
+                >
+                    Sign Up
+                </LoadingButton>
                 <Typography
                     className={styles.goToLoginLink}
                     onClick={() => {

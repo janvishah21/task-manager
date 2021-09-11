@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import LoginIcon from '@mui/icons-material/Login';
+import LoadingButton from '@mui/lab/LoadingButton';
 import Typography from '@mui/material/Typography';
 import { loginStyles } from '../../styles/Login.style';
 import { FormUtil, Form } from '../shared/Formutil';
@@ -17,6 +18,8 @@ function Login() {
 
     const dispatch = useDispatch();
 
+    const [loading, setLoading] = useState(false);
+
     const validate = (fieldValues = values) => {
         // ignore
     }
@@ -31,6 +34,7 @@ function Login() {
     } = FormUtil(initialValues, true, validate);
 
     const handleSubmit = async (e) => {
+        setLoading(true);
         e.preventDefault();
         const { data, error } = await login(values.email, values.password);
         if (data) {
@@ -55,6 +59,7 @@ function Login() {
                 ...notification
             }));
         }
+        setLoading(false);
     }
 
     return (
@@ -75,11 +80,16 @@ function Login() {
                     type="password"
                     onChange={handleInputChange}
                 />
-                <Controls.Button
+                <LoadingButton
                     className={styles.submitBtn}
                     type="submit"
                     endIcon={<LoginIcon />}
-                    text="Login" />
+                    loading={loading}
+                    loadingPosition="end"
+                    variant="contained"
+                >
+                    Log In
+                </LoadingButton>
                 <Typography
                     className={styles.goToSignUpLink}
                     onClick={() => {
