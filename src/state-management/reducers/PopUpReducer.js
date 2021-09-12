@@ -12,14 +12,7 @@ export default function(state = initialState, action) {
         case UPDATE_POPUP_STATE:
             return {
                 ...state,
-                editProject: {
-                    ...state.editProject,
-                    ...action.payload.editProject
-                },
-                editAccessRequest: {
-                    ...state.editAccessRequest,
-                    ...action.payload.editAccessRequest
-                }
+                ...action.payload
             }
         default:
             return state

@@ -76,7 +76,7 @@ function AccessRequests() {
             valueFormatter: userIDFormatter
         },
         {
-            field: 'accessRequestedFor',
+            field: 'accessRequestedFor._id',
             headerName: 'Requested For',
             valueFormatter: userIDFormatter
         },

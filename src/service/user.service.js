@@ -97,3 +97,27 @@ export const getAvatar = async (userId, token) => {
         };
     }
 }
+
+export const getUsers = async (token, search = '', active = true) => {
+    try {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/users?active=${active}&search=${search}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!res.ok)
+            throw res;
+
+        const data = await res.json();
+
+        return {
+            data
+        };
+    } catch (error) {
+        return {
+            error
+        };
+    }
+}

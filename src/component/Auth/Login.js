@@ -5,7 +5,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import Typography from '@mui/material/Typography';
 import { loginStyles } from '../../styles/Login.style';
 import { FormUtil, Form } from '../shared/Formutil';
-import { login } from '../../service/auth.service';
+import { login } from '../../service/user.service';
 import { updateAuth } from '../../state-management/actions/Auth.actions';
 import { updatePopUpState } from '../../state-management/actions/PopUp.actions';
 import { updateNotificationState } from '../../state-management/actions/Notification.actions';

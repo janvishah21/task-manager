@@ -21,7 +21,7 @@ function Popup({ title, children, openPopup, onClose, showAppTitle = false, show
             maxWidth="sm"
             TransitionComponent={Transition}
             classes={{ paper: styles.dialogWrapper }}
-            onClose={onClose}
+            onClose={() => !showCloseBtn && onClose()}
         >
             {
                 showAppTitle ? 

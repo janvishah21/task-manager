@@ -18,7 +18,7 @@ import SignUp from './Auth/SignUp';
 import { updatePageContentState } from '../state-management/actions/PageContentState.actions';
 import { updateAuth } from '../state-management/actions/Auth.actions';
 import { updatePopUpState } from '../state-management/actions/PopUp.actions';
-import { logout, getAvatar } from '../service/auth.service';
+import { logout, getAvatar } from '../service/user.service';
 import { getReleases } from '../service/release.service';
 import { updateLoaderState } from '../state-management/actions/Loader.actions';
 import { updateNotificationState } from '../state-management/actions/Notification.actions';

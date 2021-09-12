@@ -4,13 +4,16 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import CancelIcon from '@mui/icons-material/Cancel';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import { updateAccessRequest } from '../../../../service/access-request.service';
 import { accessRequestActionsRendererStyles } from '../../../../styles/AccessRequestActionsRenderer.style';
 import { updateNotificationState } from '../../../../state-management/actions/Notification.actions';
+import { updatePopUpState } from '../../../../state-management/actions/PopUp.actions';
+import Popup from '../../Popup';
+import EditAccessRequest from '../../../pages/EditAccessRequest';
 
 const colors = {
     Opened: 'violet',
@@ -32,6 +35,7 @@ function AccessRequestActionsRenderer(params) {
     const [allowedActions, setAllowedActions] = useState([]);
 
     const user = useSelector(state => state.auth);
+    const popUpState = useSelector(state => state.popUp);
 
     useEffect(() => {
         const id = user.user._id;
@@ -82,11 +86,26 @@ function AccessRequestActionsRenderer(params) {
         return allowedActions.includes(action);
     }
 
+    const isAllowedToEdit = () => [params.data.applicant, params.data.project.owner].includes(user.user._id);
+
     return (
         <div className={styles.root}>
             {
                 !loading.state ?
                     <>
+                        {
+                            isAllowedToEdit() ? 
+                                <Tooltip
+                                    title="Edit Project Details"
+                                    arrow
+                                >
+                                    <IconButton
+                                        onClick={() => dispatch(updatePopUpState({ editAccessRequest: { [params.data._id]: true } }))}
+                                    >
+                                        <EditOutlinedIcon />
+                                    </IconButton>
+                                </Tooltip> : ''
+                        }
                         {
                             isAllowed('Open') ?
                                 <Tooltip
@@ -154,6 +173,17 @@ function AccessRequestActionsRenderer(params) {
                         className={styles.circularProgress}
                         />
             }
+            <Popup 
+                title="Edit Access Request"
+                fullWidth={true}
+                openPopup={popUpState.editAccessRequest[params.data._id] ?? false}
+                onClose={() => dispatch(updatePopUpState({ editAccessRequest: { [params.data._id]: false } }))}
+                showCloseBtn={true}
+            >
+                <EditAccessRequest 
+                    request={params.data}
+                />
+            </Popup>
         </div>
     )
 }

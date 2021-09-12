@@ -69,7 +69,7 @@ function ProjectActionsRenderer(params) {
             <Popup 
                 title="Edit Project"
                 fullWidth={true}
-                openPopup={popUpState.editProject[params.data.project._id]}
+                openPopup={popUpState.editProject[params.data.project._id] ?? false}
                 onClose={() => dispatch(updatePopUpState({ editProject: { [params.data.project._id]: false } }))}
             >
                 <EditProject 

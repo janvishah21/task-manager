@@ -33,7 +33,6 @@ function EditProject({ project }) {
     } = FormUtil(initialValues, true, validate);
 
     useEffect(() => {
-        console.log(project)
         setValues({
             ...project
         });
