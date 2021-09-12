@@ -7,7 +7,7 @@ import { loginStyles } from '../../styles/Login.style';
 import { FormUtil, Form } from '../shared/Formutil';
 import { login } from '../../service/auth.service';
 import { updateAuth } from '../../state-management/actions/Auth.actions';
-import { updateLoginPopUpState, updateSignUpPopUpState } from '../../state-management/actions/AuthPopUp.actions';
+import { updatePopUpState } from '../../state-management/actions/PopUp.actions';
 import { updateNotificationState } from '../../state-management/actions/Notification.actions';
 
 import Controls from '../controls/Controls';
@@ -44,7 +44,7 @@ function Login() {
                 type: 'success'
             }));
             dispatch(updateAuth(data));
-            dispatch(updateLoginPopUpState(false));
+            dispatch(updatePopUpState({ login: false }));
         } else if (error) {
             const notification = {
                 isOpen: true,
@@ -91,10 +91,10 @@ function Login() {
                 </LoadingButton>
                 <Typography
                     className={styles.goToSignUpLink}
-                    onClick={() => {
-                        dispatch(updateLoginPopUpState(false));
-                        dispatch(updateSignUpPopUpState(true));
-                    }}
+                    onClick={() => dispatch(updatePopUpState({
+                        login: false,
+                        signUp: true
+                    }))}
                 >Don't have an account ?</Typography>
             </Form>
         </div>

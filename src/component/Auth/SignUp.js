@@ -7,7 +7,7 @@ import { signUpStyles } from '../../styles/SignUp.style';
 import { FormUtil, Form } from '../shared/Formutil';
 import { signUp } from '../../service/auth.service';
 import { updateAuth } from '../../state-management/actions/Auth.actions';
-import { updateLoginPopUpState, updateSignUpPopUpState } from '../../state-management/actions/AuthPopUp.actions';
+import { updatePopUpState } from '../../state-management/actions/PopUp.actions';
 import { updateNotificationState } from '../../state-management/actions/Notification.actions';
 
 import Controls from '../controls/Controls';
@@ -58,7 +58,7 @@ function SignUp() {
                 type: 'success'
             }));
             dispatch(updateAuth(data));
-            dispatch(updateSignUpPopUpState(false));
+            dispatch(updatePopUpState({ signUp: false }));
         } else if (error) {
             const notification = {
                 isOpen: true,
@@ -127,10 +127,10 @@ function SignUp() {
                 </LoadingButton>
                 <Typography
                     className={styles.goToLoginLink}
-                    onClick={() => {
-                        dispatch(updateSignUpPopUpState(false));
-                        dispatch(updateLoginPopUpState(true));
-                    }}
+                    onClick={() => dispatch(updatePopUpState({
+                        login: true,
+                        signUp: false
+                    }))}
                 >Already have an account ?</Typography>
             </Form>
         </div>

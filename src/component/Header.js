@@ -17,7 +17,7 @@ import Login from './Auth/Login';
 import SignUp from './Auth/SignUp';
 import { updatePageContentState } from '../state-management/actions/PageContentState.actions';
 import { updateAuth } from '../state-management/actions/Auth.actions';
-import { updateLoginPopUpState, updateSignUpPopUpState } from '../state-management/actions/AuthPopUp.actions';
+import { updatePopUpState } from '../state-management/actions/PopUp.actions';
 import { logout, getAvatar } from '../service/auth.service';
 import { getReleases } from '../service/release.service';
 import { updateLoaderState } from '../state-management/actions/Loader.actions';
@@ -37,7 +37,7 @@ function Header() {
     const dispatch = useDispatch();
     const pageContentState = useSelector(state => state.pageContentState);
     const user = useSelector(state => state.auth);
-    const authPopUpState = useSelector(state => state.authPopUp);
+    const popUpState = useSelector(state => state.popUp);
     const releases = useSelector(state => state.releases);
 
     useEffect(() => {
@@ -189,14 +189,14 @@ function Header() {
                             <Typography 
                                 className={styles.navItem}
                                 fontWeight="fontWeightBold"
-                                onClick={() => dispatch(updateLoginPopUpState(true))}
+                                onClick={() => dispatch(updatePopUpState({ login: true }))}
                             >
                                 Log In
                             </Typography>
                             <Typography 
                                 className={styles.navItem}
                                 fontWeight="fontWeightBold"
-                                onClick={() => dispatch(updateSignUpPopUpState(true))}
+                                onClick={() => dispatch(updatePopUpState({ signUp: true }))}
                             >
                                 Sign Up
                             </Typography>
@@ -207,8 +207,8 @@ function Header() {
                 title="Log In"
                 fullWidth={true}
                 showAppTitle={true}
-                openPopup={authPopUpState.loginPopUp}
-                onClose={() => dispatch(updateLoginPopUpState(false))}
+                openPopup={popUpState.login}
+                onClose={() => dispatch(updatePopUpState({ login: false }))}
             >
                 <Login />
             </Popup>
@@ -216,8 +216,8 @@ function Header() {
                 title="Sign Up"
                 fullWidth={true}
                 showAppTitle={true}
-                openPopup={authPopUpState.signUpPopUp}
-                onClose={() => dispatch(updateSignUpPopUpState(false))}
+                openPopup={popUpState.signUp}
+                onClose={() => dispatch(updatePopUpState({ signUp: false }))}
             >
                 <SignUp />
             </Popup>

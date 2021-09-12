@@ -6,6 +6,9 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { raiseAccessRequest } from '../../../../service/access-request.service';
 import { updateNotificationState } from '../../../../state-management/actions/Notification.actions';
+import EditProject from '../../../pages/EditProject';
+import Popup from '../../Popup';
+import { updatePopUpState } from '../../../../state-management/actions/PopUp.actions';
 
 function ProjectActionsRenderer(params) {
 
@@ -14,6 +17,7 @@ function ProjectActionsRenderer(params) {
     const [loading, setLoading] = useState(false);
 
     const user = useSelector(state => state.auth);
+    const popUpState = useSelector(state => state.popUp);
 
     const requestAccess = async (project) => {
         setLoading(true);
@@ -34,8 +38,6 @@ function ProjectActionsRenderer(params) {
         setLoading(false);
     }
 
-    const handleEdit = () => {}
-
     return (
         <>
             {
@@ -45,7 +47,7 @@ function ProjectActionsRenderer(params) {
                         arrow
                     >
                         <IconButton
-                            onClick={() => handleEdit()}
+                            onClick={() => dispatch(updatePopUpState({ editProject: { [params.data.project._id]: true } }))}
                         >
                             <EditOutlinedIcon />
                         </IconButton>
@@ -64,6 +66,16 @@ function ProjectActionsRenderer(params) {
                     </LoadingButton>
                     : ''
             }
+            <Popup 
+                title="Edit Project"
+                fullWidth={true}
+                openPopup={popUpState.editProject[params.data.project._id]}
+                onClose={() => dispatch(updatePopUpState({ editProject: { [params.data.project._id]: false } }))}
+            >
+                <EditProject 
+                    project={params.data.project}
+                />
+            </Popup>
         </>
     )
 }
