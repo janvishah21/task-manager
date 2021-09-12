@@ -27,9 +27,9 @@ export const raiseAccessRequest = async (project, accessRequestedFor, token) => 
     }
 }
 
-export const getReceivedAccessRequests = async (token) => {
+export const getAccessRequests = async (token) => {
     try {
-        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/received-access-requests`, {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/access-requests`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`

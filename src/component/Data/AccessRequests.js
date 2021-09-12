@@ -9,16 +9,17 @@ import { useEffect, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Typography from '@mui/material/Typography';
 import { AgGridReact } from 'ag-grid-react';
-import { receivedAccessRequestsStyles } from '../../styles/ReceivedAccessRequests.style';
-import { getReceivedAccessRequests } from '../../service/access-request.service';
+import { accessRequestsStyles } from '../../styles/AccessRequests.style';
+import { getAccessRequests } from '../../service/access-request.service';
 import TimeRenderer from '../shared/grid/cell-renderers/TimeRenderer';
 import AccessRequestActionsRenderer from '../shared/grid/cell-renderers/AccessRequestActionsRenderer';
-import { userIDFormatter, requestStatusFormatter } from '../shared/grid/formatters';
+import { userIDFormatter } from '../shared/grid/formatters';
 import { updateNotificationState } from '../../state-management/actions/Notification.actions';
+import { accessRequestStatusStyler } from '../shared/grid/cellStyles';
 
-function Projects() {
+function AccessRequests() {
 
-    const styles = receivedAccessRequestsStyles();
+    const styles = accessRequestsStyles();
 
     const [rowData, setRowData] = useState([]);
 
@@ -26,8 +27,8 @@ function Projects() {
     const user = useSelector(state => state.auth);
 
     useEffect(() => {
-        const getAllReceivedAccessRequests = async () => {
-            let { data, error } = await getReceivedAccessRequests(user.token);
+        const getAllAccessRequests = async () => {
+            let { data, error } = await getAccessRequests(user.token);
             if (error) {
                 error = await error.json();
                 dispatch(updateNotificationState({
@@ -39,7 +40,7 @@ function Projects() {
                 setRowData(data || []);
             }
         }
-        getAllReceivedAccessRequests();
+        getAllAccessRequests();
     }, []);
 
     const modules = useMemo( ()=> [
@@ -70,30 +71,35 @@ function Projects() {
             headerName: 'Project Name'
         },
         {
+            field: 'project.owner',
+            headerName: 'Project Admin',
+            valueFormatter: userIDFormatter
+        },
+        {
             field: 'accessRequestedFor',
             headerName: 'Requested For',
-            width: 150,
             valueFormatter: userIDFormatter
         },
         {
             field: 'applicant',
             headerName: 'Raised By',
-            width: 150,
             valueFormatter: userIDFormatter
         },
         {
+            field: 'status',
             headerName: 'Status',
-            width: 120,
-            valueFormatter: requestStatusFormatter
+            cellStyle: accessRequestStatusStyler
         },
         {
-            cellRenderer: 'accessRequestActionsRenderer'
+            cellRenderer: 'accessRequestActionsRenderer',
+            width: 180
         }
     ], []);
 
     const defaultColDef = useMemo(()=> ({
         resizable: true,
-        sortable: true
+        sortable: true,
+        width: 150
     }), []);
 
     return (
@@ -104,7 +110,7 @@ function Projects() {
                     sx={{ fontSize: 20}}
                     fontWeight="bold"
                 >
-                    Received Access Requests
+                    Access Requests
                 </Typography>
             </div>
             <AgGridReact 
@@ -120,4 +126,4 @@ function Projects() {
     )
 }
 
-export default Projects;
+export default AccessRequests;

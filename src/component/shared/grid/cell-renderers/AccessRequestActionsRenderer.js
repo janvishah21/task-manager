@@ -1,19 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import CancelIcon from '@mui/icons-material/Cancel';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import { updateAccessRequest } from '../../../../service/access-request.service';
 import { accessRequestActionsRendererStyles } from '../../../../styles/AccessRequestActionsRenderer.style';
 import { updateNotificationState } from '../../../../state-management/actions/Notification.actions';
 
 const colors = {
-    approve: 'green',
-    reject: 'red',
-    delete: 'grey'
+    Opened: 'violet',
+    Approved: 'green',
+    Rejected: 'red',
+    Closed: 'grey'
 }
 
 function AccessRequestActionsRenderer(params) {
@@ -26,37 +29,36 @@ function AccessRequestActionsRenderer(params) {
         state: false,
         color: 'green'
     });
+    const [allowedActions, setAllowedActions] = useState([]);
 
     const user = useSelector(state => state.auth);
+
+    useEffect(() => {
+        const id = user.user._id;
+        const status = params.data.status;
+        let actions = [];
+        if (!(['Approved', 'Rejected'].includes(status))) {
+            if (id === params.data.applicant) {
+                actions = ['Open', 'Closed'];
+            } else if (id === params.data.project.owner) {
+                if (status === 'Closed')
+                actions = ['Open'];
+                else
+                actions = ['Open', 'Closed', 'Approved', 'Rejected'];
+            }
+            actions = actions.filter(action => action !== status);
+        }
+        setAllowedActions(actions);
+    }, [user, params]);
 
     const handleAction = async (action) => {
         setLoading({
             state: true,
             color: colors[action]
         });
-        let update = {};
-        switch(action) {
-            case 'approve':
-                update = {
-                    open: false,
-                    approved: true
-                };
-                break;
-            case 'reject': 
-                update = {
-                    open: false,
-                    approved: false
-                };
-                break;
-            case 'close': 
-                update = {
-                    open: false
-                };
-                break;
-            default:
-                update = {};
-        }
-        const { data, error } = await updateAccessRequest(params.data._id, update, user.token);
+        const { data, error } = await updateAccessRequest(params.data._id, {
+            status: action
+        }, user.token);
         if (error) {
             dispatch(updateNotificationState({
                 isOpen: true,
@@ -66,7 +68,7 @@ function AccessRequestActionsRenderer(params) {
         } else {
             dispatch(updateNotificationState({
                 isOpen: true,
-                message: `Request ${action}ed successfully !`,
+                message: `Request ${action === 'Open' ? 'Reopened' : action} successfully !`,
                 type: 'success'
             }));
         }
@@ -76,47 +78,75 @@ function AccessRequestActionsRenderer(params) {
         });
     }
 
+    const isAllowed = (action) => {
+        return allowedActions.includes(action);
+    }
+
     return (
         <div className={styles.root}>
             {
                 !loading.state ?
                     <>
-                        <Tooltip
-                            title="Approve"
-                            arrow
-                        >
-                            <IconButton
-                                onClick={() => handleAction('approve')}
-                            >
-                                <TaskAltIcon 
-                                    style={{ color: colors.approve }}
-                                />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip
-                            title="Reject"
-                            arrow
-                        >
-                            <IconButton
-                                onClick={() => handleAction('reject')}
-                            >
-                                <CancelOutlinedIcon 
-                                    style={{ color: colors.reject }}
-                                />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip
-                            title="Close"
-                            arrow
-                        >
-                            <IconButton
-                                onClick={() => handleAction('close')}
-                            >
-                                <DeleteOutlinedIcon 
-                                    style={{ color: colors.close }}
-                                />
-                            </IconButton>
-                        </Tooltip>
+                        {
+                            isAllowed('Open') ?
+                                <Tooltip
+                                    title="Reopen"
+                                    arrow
+                                >
+                                    <IconButton
+                                        onClick={() => handleAction('Open')}
+                                    >
+                                        <LockOpenIcon 
+                                            style={{ color: colors.Opened }}
+                                        />
+                                    </IconButton>
+                                </Tooltip> : ''
+                        }
+                        {
+                            isAllowed('Approved') ?
+                                <Tooltip
+                                    title="Approve"
+                                    arrow
+                                >
+                                    <IconButton
+                                        onClick={() => handleAction('Approved')}
+                                    >
+                                        <TaskAltIcon 
+                                            style={{ color: colors.Approved }}
+                                        />
+                                    </IconButton>
+                                </Tooltip> : ''
+                        }
+                        {
+                            isAllowed('Rejected') ?
+                                <Tooltip
+                                    title="Reject"
+                                    arrow
+                                >
+                                    <IconButton
+                                        onClick={() => handleAction('Rejected')}
+                                    >
+                                        <CancelOutlinedIcon 
+                                            style={{ color: colors.Rejected }}
+                                        />
+                                    </IconButton>
+                                </Tooltip> : ''
+                        }
+                        {
+                            isAllowed('Closed') ?
+                                <Tooltip
+                                    title="Close"
+                                    arrow
+                                >
+                                    <IconButton
+                                        onClick={() => handleAction('Closed')}
+                                    >
+                                        <LockOutlinedIcon 
+                                            style={{ color: colors.Closed }}
+                                        />
+                                    </IconButton>
+                                </Tooltip> : ''
+                        }
                     </>
                     : <CircularProgress 
                         size={20}

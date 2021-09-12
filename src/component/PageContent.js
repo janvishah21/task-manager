@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 import { pageContentStyles } from '../styles/PageContent.style';
 import Projects from './Data/Projects';
-import ReceivedAccessRequests from './Data/ReceivedAccessRequests';
+import Tasks from './Data/Tasks';
+import AccessRequests from './Data/AccessRequests';
 
 function PageContent() {
 
@@ -16,8 +17,9 @@ function PageContent() {
                 user.token ? 
                     {
                         'projects': <Projects />,
-                        'received-access-requests': <ReceivedAccessRequests />
-                    }[pageContentState] 
+                        'access-requests': <AccessRequests />,
+                        'tasks': <Tasks />
+                    }[pageContentState.page]
                     : ''
             }
         </div>

@@ -9,26 +9,25 @@ import { useEffect, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Typography from '@mui/material/Typography';
 import { AgGridReact } from 'ag-grid-react';
-import { projectsStyles } from '../../styles/Projects.style';
-import { getProjects } from '../../service/project.service';
+import { tasksStyles } from '../../styles/Tasks.style';
+import { getTasks } from '../../service/task.service';
 import TimeRenderer from '../shared/grid/cell-renderers/TimeRenderer';
-import ProcessNameRenderer from '../shared/grid/cell-renderers/ProcessNameRenderer';
-import ProjectActionsRenderer from '../shared/grid/cell-renderers/ProjectActionsRenderer';
-import { userObjectFormatter } from '../shared/grid/formatters';
+import { userIDFormatter } from '../shared/grid/formatters';
 import { updateNotificationState } from '../../state-management/actions/Notification.actions';
 
-function Projects() {
+function Tasks() {
 
-    const styles = projectsStyles();
+    const styles = tasksStyles();
 
     const [rowData, setRowData] = useState([]);
 
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth);
+    const pageContentState = useSelector(state => state.pageContentState);
 
     useEffect(() => {
-        const getAllProjects = async () => {
-            let { data, error } = await getProjects(user.token);
+        const getAllTasks = async () => {
+            let { data, error } = await getTasks(pageContentState.attrs.project.project._id, user.token);
             if (error) {
                 error = await error.json();
                 dispatch(updateNotificationState({
@@ -38,9 +37,10 @@ function Projects() {
                 }));
             } else {
                 setRowData(data || []);
+                console.log(data)
             }
         }
-        getAllProjects();
+        getAllTasks();
     }, []);
 
     const modules = useMemo( ()=> [
@@ -50,40 +50,32 @@ function Projects() {
         RichSelectModule], []);
 
     const frameworkComponents = {
-        timeRenderer: TimeRenderer,
-        processNameRenderer: ProcessNameRenderer,
-        projectActionsRenderer: ProjectActionsRenderer
+        timeRenderer: TimeRenderer
     };
 
     const columnDefs = useMemo(() => [
         {
-            field: 'project.updatedAt',
+            field: 'updatedAt',
             headerName: 'Last Updated',
             width: 260,
             cellRenderer: 'timeRenderer',
             sort: 'desc'
         },
         {
-            field: 'project._id',
-            headerName: 'Project ID'
+            field: 'title',
+            headerName: 'Title',
+            width: 200
         },
         {
-            field: 'project.name',
-            cellRenderer: 'processNameRenderer'
+            field: 'assignee',
+            valueFormatter: userIDFormatter
         },
         {
-            field: 'project.description',
-            width: 300
+            field: 'reporter',
+            valueFormatter: userIDFormatter
         },
         {
-            field: 'project.owner',
-            headerName: 'Owner',
-            valueFormatter: userObjectFormatter
-        },
-        {
-            field: 'accessible',
-            headerName: '',
-            cellRenderer: 'projectActionsRenderer'
+            field: 'status'
         }
     ], []);
 
@@ -98,10 +90,16 @@ function Projects() {
             <div className={styles.gridHeader}>
                 <Typography
                     className={styles.gridHeaderText}
-                    sx={{ fontSize: 20}}
+                    sx={{ fontSize: 20 }}
                     fontWeight="bold"
                 >
-                    Projects
+                    {pageContentState.attrs.project.project.name}
+                </Typography>
+                <Typography
+                    className={styles.gridHeaderText}
+                    sx={{ fontSize: 14 }}
+                >
+                    &gt; Tasks
                 </Typography>
             </div>
             <AgGridReact 
@@ -117,4 +115,4 @@ function Projects() {
     )
 }
 
-export default Projects;
+export default Tasks;

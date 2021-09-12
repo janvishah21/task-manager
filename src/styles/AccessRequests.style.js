@@ -1,6 +1,6 @@
 import { makeStyles } from '@mui/styles';
 
-export const receivedAccessRequestsStyles = makeStyles(theme => ({
+export const accessRequestsStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
         flexGrow: 1,

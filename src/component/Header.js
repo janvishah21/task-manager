@@ -107,7 +107,7 @@ function Header() {
         <div className={styles.root}>
             <Toolbar 
                 className={styles.title}
-                onClick={() => dispatch(updatePageContentState('projects'))}
+                onClick={() => dispatch(updatePageContentState({ page: 'projects' }))}
             >
                 <TaskAltOutlinedIcon fontSize="large" className={styles.logo}/>
                 <Typography 
@@ -131,13 +131,13 @@ function Header() {
                     user.token ? 
                         <>
                             { 
-                                pageContentState === 'projects' ? 
+                                pageContentState.page !== 'access-requests' ? 
                                     <Tooltip
-                                        title="Received Access Requesrs"
+                                        title="Access Requests"
                                         arrow
                                     >
                                         <IconButton
-                                            onClick={() => dispatch(updatePageContentState('received-access-requests'))}
+                                            onClick={() => dispatch(updatePageContentState({ page: 'access-requests' }))}
                                         >
                                             <PlaylistAddIcon 
                                                 className={styles.iconBtn}
@@ -146,13 +146,13 @@ function Header() {
                                     </Tooltip> : ''
                             }
                             { 
-                                pageContentState === 'received-access-requests' ?
+                                pageContentState.page !== 'projects' ?
                                     <Tooltip
                                         title="Projects"
                                         arrow
                                     >
                                         <IconButton 
-                                            onClick={() => dispatch(updatePageContentState('projects'))}
+                                            onClick={() => dispatch(updatePageContentState({ page: 'projects' }))}
                                         >
                                             <AccountTreeIcon 
                                                 className={styles.iconBtn}
