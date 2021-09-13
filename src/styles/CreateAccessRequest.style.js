@@ -1,6 +1,6 @@
 import { makeStyles } from '@mui/styles';
 
-export const editAccessRequestStyles = makeStyles(() => ({
+export const createAccessRequestStyles = makeStyles(() => ({
     form: {
         textAlign: 'center',
         display: 'grid',

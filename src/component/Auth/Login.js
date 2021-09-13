@@ -64,7 +64,7 @@ function Login() {
 
     return (
         <div className={styles.root}>
-            <Form onSubmit={handleSubmit} className={styles.loginForm}>
+            <Form onSubmit={handleSubmit} className={styles.form}>
                 <Controls.Input
                     label="Email"
                     name="email"

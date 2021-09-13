@@ -131,21 +131,6 @@ function Header() {
                     user.token ? 
                         <>
                             { 
-                                pageContentState.page !== 'access-requests' ? 
-                                    <Tooltip
-                                        title="Access Requests"
-                                        arrow
-                                    >
-                                        <IconButton
-                                            onClick={() => dispatch(updatePageContentState({ page: 'access-requests' }))}
-                                        >
-                                            <PlaylistAddIcon 
-                                                className={styles.iconBtn}
-                                            />
-                                        </IconButton>
-                                    </Tooltip> : ''
-                            }
-                            { 
                                 pageContentState.page !== 'projects' ?
                                     <Tooltip
                                         title="Projects"
@@ -155,6 +140,21 @@ function Header() {
                                             onClick={() => dispatch(updatePageContentState({ page: 'projects' }))}
                                         >
                                             <AccountTreeIcon 
+                                                className={styles.iconBtn}
+                                            />
+                                        </IconButton>
+                                    </Tooltip> : ''
+                            }
+                            { 
+                                pageContentState.page !== 'access-requests' ? 
+                                    <Tooltip
+                                        title="Access Requests"
+                                        arrow
+                                    >
+                                        <IconButton
+                                            onClick={() => dispatch(updatePageContentState({ page: 'access-requests' }))}
+                                        >
+                                            <PlaylistAddIcon 
                                                 className={styles.iconBtn}
                                             />
                                         </IconButton>

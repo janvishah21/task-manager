@@ -8,6 +8,8 @@ export const accessRequestsStyles = makeStyles(theme => ({
         height: '70vh'
     },
     gridHeader: {
+        display: 'grid',
+        gridTemplateColumns: '1fr max-content',
         color: 'white',
         marginBottom: '15px'
     }

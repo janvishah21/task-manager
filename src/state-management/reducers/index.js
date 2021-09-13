@@ -10,9 +10,9 @@ import LoaderReducer from './LoaderReducer';
 export default combineReducers({
     pageContentState: PageContentStateReducer,
     auth: AuthReducer,
+    releases: ReleaseReducer,
     users: UsersReducer,
     popUp: PopUpReducer,
     loader: LoaderReducer,
-    notification: NotificationReducer,
-    releases: ReleaseReducer
+    notification: NotificationReducer
 });

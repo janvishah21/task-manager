@@ -14,6 +14,8 @@ import { getTasks } from '../../service/task.service';
 import TimeRenderer from '../shared/grid/cell-renderers/TimeRenderer';
 import { userIDFormatter } from '../shared/grid/formatters';
 import { updateNotificationState } from '../../state-management/actions/Notification.actions';
+import { updatePopUpState } from '../../state-management/actions/PopUp.actions';
+import { updateAuth } from '../../state-management/actions/Auth.actions';
 
 function Tasks() {
 
@@ -29,6 +31,16 @@ function Tasks() {
         const getAllTasks = async () => {
             let { data, error } = await getTasks(pageContentState.attrs.project.project._id, user.token);
             if (error) {
+                if (error.status === 408) {
+                    dispatch(updateNotificationState({
+                        isOpen: true,
+                        message: 'Session Expired, Please Login Again !',
+                        type: 'error'
+                    }));
+                    dispatch(updateAuth({}));
+                    dispatch(updatePopUpState({ login: true }));
+                    return;
+                }
                 error = await error.json();
                 dispatch(updateNotificationState({
                     isOpen: true,

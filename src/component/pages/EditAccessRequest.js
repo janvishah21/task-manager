@@ -97,13 +97,13 @@ function EditAccessRequest({ request }) {
 
     return (
         <div className={styles.root}>
-            <Form onSubmit={handleSubmit} className={styles.loginForm}>
+            <Form onSubmit={handleSubmit} className={styles.form}>
                 <Autocomplete
                     open={optionsOpen}
                     onOpen={() => setOptionsOpen(true)}
                     onClose={() => setOptionsOpen(false)}
                     value={values.accessRequestedFor}
-                    onChange={handleOptionChange}
+                    onChange={handleOptionChange} // TODO
                     options={users}
                     loading={optionsLoading}
                     isOptionEqualToValue={(option, value) => option._id === value._id}

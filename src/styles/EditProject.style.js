@@ -1,7 +1,7 @@
 import { makeStyles } from '@mui/styles';
 
 export const editProjectStyles = makeStyles(() => ({
-    loginForm: {
+    form: {
         textAlign: 'center',
         display: 'grid',
         gridTemplateColumns: '1fr',

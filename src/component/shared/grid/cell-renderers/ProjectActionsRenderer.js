@@ -47,7 +47,7 @@ function ProjectActionsRenderer(params) {
                         arrow
                     >
                         <IconButton
-                            onClick={() => dispatch(updatePopUpState({ editProject: { [params.data.project._id]: true } }))}
+                            onClick={() => dispatch(updatePopUpState({ editProject: params.data.project._id }))}
                         >
                             <EditOutlinedIcon />
                         </IconButton>
@@ -69,8 +69,8 @@ function ProjectActionsRenderer(params) {
             <Popup 
                 title="Edit Project"
                 fullWidth={true}
-                openPopup={popUpState.editProject[params.data.project._id] ?? false}
-                onClose={() => dispatch(updatePopUpState({ editProject: { [params.data.project._id]: false } }))}
+                openPopup={popUpState.editProject === params.data.project._id}
+                onClose={() => dispatch(updatePopUpState({ editProject: undefined }))}
             >
                 <EditProject 
                     project={params.data.project}

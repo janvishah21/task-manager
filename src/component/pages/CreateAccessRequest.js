@@ -1,17 +1,15 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useState, useEffect } from 'react';
-import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
+import { useState } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { editProjectStyles } from '../../styles/EditProject.style';
+import { createAccessRequestStyles } from '../../styles/CreateAccessRequest.style';
 import { FormUtil, Form } from '../shared/Formutil';
-import { updateProjectDetails } from '../../service/project.service';
 import { updateNotificationState } from '../../state-management/actions/Notification.actions';
-
+import { createProject } from '../../service/project.service';
 import Controls from '../controls/Controls';
 
-function EditProject({ project }) {
+function CreateAccessRequest() {
 
-    const styles = editProjectStyles();
+    const styles = createAccessRequestStyles();
 
     const dispatch = useDispatch();
 
@@ -32,29 +30,29 @@ function EditProject({ project }) {
         resetForm
     } = FormUtil(initialValues, true, validate);
 
-    useEffect(() => {
-        setValues({
-            ...project
-        });
-    }, [project]);
-
     const handleSubmit = async (e) => {
         setLoading(true);
         e.preventDefault();
-        const { data, error } = await updateProjectDetails(project._id, values, user.token);
-        if (data) {
-            dispatch(updateNotificationState({
-                isOpen: true,
-                message: 'Project Details Updated !',
-                type: 'success'
-            }));
-        } else if (error) {
-            dispatch(updateNotificationState({
-                isOpen: true,
-                message: 'Internal Server Error 😕',
-                type: 'error'
-            }));
-        }
+        // const { data, error } = await createProject(user.token, values);
+        // if (data) {
+        //     dispatch(updateNotificationState({
+        //         isOpen: true,
+        //         message: 'New Project Created !',
+        //         type: 'success'
+        //     }));
+        // } else if (error?.status === 409) {
+        //     dispatch(updateNotificationState({
+        //         isOpen: true,
+        //         message: 'Project Key Already Taken !',
+        //         type: 'error'
+        //     }));
+        // } else if (error) {
+        //     dispatch(updateNotificationState({
+        //         isOpen: true,
+        //         message: 'Internal Server Error 😕',
+        //         type: 'error'
+        //     }));
+        // }
         setLoading(false);
     }
 
@@ -62,14 +60,7 @@ function EditProject({ project }) {
         <div className={styles.root}>
             <Form onSubmit={handleSubmit} className={styles.form}>
                 <Controls.Input
-                    label="Project Name"
-                    name="name"
-                    value={values.name}
-                    autoFocus
-                    onChange={handleInputChange}
-                />
-                <Controls.Input
-                    label="Project Description"
+                    label="Request Description"
                     name="description"
                     multiline
                     rows={3}
@@ -79,11 +70,10 @@ function EditProject({ project }) {
                 <LoadingButton
                     className={styles.submitBtn}
                     type="submit"
-                    endIcon={<SaveOutlinedIcon />}
                     loading={loading}
                     variant="contained"
                 >
-                    Save
+                    Submit
                 </LoadingButton>
             </Form>
         </div>
@@ -91,8 +81,9 @@ function EditProject({ project }) {
 }
 
 const initialValues = {
-    name: '',
-    description: ''
+    description: '',
+    accessRequestedFor: '',
+    project: ''
 }
 
-export default EditProject;
+export default CreateAccessRequest;

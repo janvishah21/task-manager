@@ -100,7 +100,7 @@ function AccessRequestActionsRenderer(params) {
                                     arrow
                                 >
                                     <IconButton
-                                        onClick={() => dispatch(updatePopUpState({ editAccessRequest: { [params.data._id]: true } }))}
+                                        onClick={() => dispatch(updatePopUpState({ editAccessRequest: params.data._id }))}
                                     >
                                         <EditOutlinedIcon />
                                     </IconButton>
@@ -176,8 +176,8 @@ function AccessRequestActionsRenderer(params) {
             <Popup 
                 title="Edit Access Request"
                 fullWidth={true}
-                openPopup={popUpState.editAccessRequest[params.data._id] ?? false}
-                onClose={() => dispatch(updatePopUpState({ editAccessRequest: { [params.data._id]: false } }))}
+                openPopup={popUpState.editAccessRequest === params.data._id}
+                onClose={() => dispatch(updatePopUpState({ editAccessRequest: undefined }))}
                 showCloseBtn={true}
             >
                 <EditAccessRequest 
