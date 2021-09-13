@@ -21,7 +21,10 @@ function ProjectActionsRenderer(params) {
 
     const requestAccess = async (project) => {
         setLoading(true);
-        const { data, error } = await raiseAccessRequest(project._id, user.user._id, user.token);
+        const { data, error } = await raiseAccessRequest({
+            project: project._id,
+            accessRequestedFor: user.user._id
+        }, user.token);
         if (error) {
             dispatch(updateNotificationState({
                 isOpen: true,

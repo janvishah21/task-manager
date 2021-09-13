@@ -224,7 +224,7 @@ function Header() {
                 </Popup>
             </div>
             {
-                process.env.REACT_APP_UNDER_DEVELOPMENT ?
+                process.env.REACT_APP_UNDER_DEVELOPMENT === 'true' ?
                     <Typography 
                         fontSize={12}
                         fontWeight="bold"

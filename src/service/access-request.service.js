@@ -22,7 +22,7 @@ export const getAccessRequests = async (token) => {
     }
 }
 
-export const raiseAccessRequest = async (project, accessRequestedFor, token) => {
+export const raiseAccessRequest = async (request, token) => {
     try {
         const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/access-requests`, {
             method: 'POST',
@@ -31,8 +31,7 @@ export const raiseAccessRequest = async (project, accessRequestedFor, token) => 
                 'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
-                project,
-                accessRequestedFor
+                ...request
             })
         });
 

@@ -125,7 +125,6 @@ function EditAccessRequest({ request }) {
                         />
                     }
                 />
-                
                 <Controls.Input
                     label="Request Details"
                     name="description"
