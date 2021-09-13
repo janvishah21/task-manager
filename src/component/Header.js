@@ -104,124 +104,137 @@ function Header() {
     }
 
     return (
-        <div className={styles.root}>
-            <Toolbar 
-                className={styles.title}
-                onClick={() => dispatch(updatePageContentState({ page: 'projects' }))}
-            >
-                <TaskAltOutlinedIcon fontSize="large" className={styles.logo}/>
-                <Typography 
-                    variant="h5"
-                    fontWeight="fontWeightBold"
-                    fontSize="h5.fontSize"
+        <>
+            <div className={styles.root}>
+                <Toolbar 
+                    className={styles.title}
+                    onClick={() => dispatch(updatePageContentState({ page: 'projects' }))}
                 >
-                    Task Manager
-                </Typography>
-                <Tooltip 
-                    title={latestRelease.description}
-                >
-                    <Typography
-                        className={styles.version}
-                        fontWeight="bold"
-                    >v{latestRelease.version}</Typography>
-                </Tooltip>
-            </Toolbar>
-            <Toolbar className={styles.navItems}>
-                {
-                    user.token ? 
-                        <>
-                            { 
-                                pageContentState.page !== 'projects' ?
-                                    <Tooltip
-                                        title="Projects"
-                                        arrow
-                                    >
-                                        <IconButton 
-                                            onClick={() => dispatch(updatePageContentState({ page: 'projects' }))}
+                    <TaskAltOutlinedIcon fontSize="large" className={styles.logo}/>
+                    <Typography 
+                        variant="h5"
+                        fontWeight="fontWeightBold"
+                        fontSize="h5.fontSize"
+                    >
+                        Task Manager
+                    </Typography>
+                    <Tooltip 
+                        title={latestRelease.description}
+                    >
+                        <Typography
+                            className={styles.version}
+                            fontWeight="bold"
+                        >v{latestRelease.version}</Typography>
+                    </Tooltip>
+                </Toolbar>
+                <Toolbar className={styles.navItems}>
+                    {
+                        user.token ? 
+                            <>
+                                { 
+                                    pageContentState.page !== 'projects' ?
+                                        <Tooltip
+                                            title="Projects"
+                                            arrow
                                         >
-                                            <AccountTreeIcon 
-                                                className={styles.iconBtn}
-                                            />
-                                        </IconButton>
-                                    </Tooltip> : ''
-                            }
-                            { 
-                                pageContentState.page !== 'access-requests' ? 
-                                    <Tooltip
-                                        title="Access Requests"
-                                        arrow
-                                    >
-                                        <IconButton
-                                            onClick={() => dispatch(updatePageContentState({ page: 'access-requests' }))}
-                                        >
-                                            <PlaylistAddIcon 
-                                                className={styles.iconBtn}
-                                            />
-                                        </IconButton>
-                                    </Tooltip> : ''
-                            }
-                            <Tooltip 
-                                title={`${user.user.name} (${user.user._id.toUpperCase()})`}
-                                TransitionComponent={Zoom}
-                                arrow
-                                leaveDelay={400}
-                            >
-                                {
-                                    profileAvatar ? 
-                                        <img src={profileAvatar} className={styles.avatar}/> : 
-                                        <Avatar className={styles.avatar} sx={{ bgcolor: deepOrange[500] }}>{getFirstLetter(user.user.name)}</Avatar>
+                                            <IconButton 
+                                                onClick={() => dispatch(updatePageContentState({ page: 'projects' }))}
+                                            >
+                                                <AccountTreeIcon 
+                                                    className={styles.iconBtn}
+                                                />
+                                            </IconButton>
+                                        </Tooltip> : ''
                                 }
-                            </Tooltip>
-                            <span 
-                                className={styles.logout}
-                                onClick={() => handleLogout()}
-                            >
+                                { 
+                                    pageContentState.page !== 'access-requests' ? 
+                                        <Tooltip
+                                            title="Access Requests"
+                                            arrow
+                                        >
+                                            <IconButton
+                                                onClick={() => dispatch(updatePageContentState({ page: 'access-requests' }))}
+                                            >
+                                                <PlaylistAddIcon 
+                                                    className={styles.iconBtn}
+                                                />
+                                            </IconButton>
+                                        </Tooltip> : ''
+                                }
+                                <Tooltip 
+                                    title={`${user.user.name} (${user.user._id.toUpperCase()})`}
+                                    TransitionComponent={Zoom}
+                                    arrow
+                                    leaveDelay={400}
+                                >
+                                    {
+                                        profileAvatar ? 
+                                            <img src={profileAvatar} className={styles.avatar}/> : 
+                                            <Avatar className={styles.avatar} sx={{ bgcolor: deepOrange[500] }}>{getFirstLetter(user.user.name)}</Avatar>
+                                    }
+                                </Tooltip>
+                                <span 
+                                    className={styles.logout}
+                                    onClick={() => handleLogout()}
+                                >
+                                    <Typography 
+                                        className={styles.navItem}
+                                        fontWeight="fontWeightBold"
+                                    >
+                                        Log Out
+                                    </Typography>
+                                    <LogoutIcon />
+                                </span>
+                            </>
+                        :   <>
                                 <Typography 
                                     className={styles.navItem}
                                     fontWeight="fontWeightBold"
+                                    onClick={() => dispatch(updatePopUpState({ login: true }))}
                                 >
-                                    Log Out
+                                    Log In
                                 </Typography>
-                                <LogoutIcon />
-                            </span>
-                        </>
-                    :   <>
-                            <Typography 
-                                className={styles.navItem}
-                                fontWeight="fontWeightBold"
-                                onClick={() => dispatch(updatePopUpState({ login: true }))}
-                            >
-                                Log In
-                            </Typography>
-                            <Typography 
-                                className={styles.navItem}
-                                fontWeight="fontWeightBold"
-                                onClick={() => dispatch(updatePopUpState({ signUp: true }))}
-                            >
-                                Sign Up
-                            </Typography>
-                        </>
-                }
-            </Toolbar>
-            <Popup 
-                title="Log In"
-                fullWidth={true}
-                showAppTitle={true}
-                openPopup={popUpState.login}
-                onClose={() => dispatch(updatePopUpState({ login: false }))}
-            >
-                <Login />
-            </Popup>
-            <Popup 
-                title="Sign Up"
-                fullWidth={true}
-                showAppTitle={true}
-                openPopup={popUpState.signUp}
-                onClose={() => dispatch(updatePopUpState({ signUp: false }))}
-            >
-                <SignUp />
-            </Popup>
-        </div>
+                                <Typography 
+                                    className={styles.navItem}
+                                    fontWeight="fontWeightBold"
+                                    onClick={() => dispatch(updatePopUpState({ signUp: true }))}
+                                >
+                                    Sign Up
+                                </Typography>
+                            </>
+                    }
+                </Toolbar>
+                <Popup 
+                    title="Log In"
+                    fullWidth={true}
+                    showAppTitle={true}
+                    openPopup={popUpState.login}
+                    onClose={() => dispatch(updatePopUpState({ login: false }))}
+                >
+                    <Login />
+                </Popup>
+                <Popup 
+                    title="Sign Up"
+                    fullWidth={true}
+                    showAppTitle={true}
+                    openPopup={popUpState.signUp}
+                    onClose={() => dispatch(updatePopUpState({ signUp: false }))}
+                >
+                    <SignUp />
+                </Popup>
+            </div>
+            {
+                process.env.REACT_APP_UNDER_DEVELOPMENT ?
+                    <Typography 
+                        fontSize={12}
+                        fontWeight="bold"
+                        className={styles.underDevelopment}
+                        color="white"
+                    >
+                        Under Development
+                    </Typography> : ''
+            }
+        </>
     )
 }
 

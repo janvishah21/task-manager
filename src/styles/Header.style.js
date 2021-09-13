@@ -54,5 +54,16 @@ export const headerStyles = makeStyles(() => ({
       '&:hover': {
         color: 'white'
       },
+    },
+    underDevelopment: {
+      textAlign: 'center',
+      textTransform: 'uppercase',
+      background: `repeating-linear-gradient(
+        40deg,
+        rgba(255, 255, 0, .4),
+        rgba(255, 255, 0, .4) 10px,
+        rgba(0, 0, 0, .3) 10px,
+        rgba(0, 0, 0, .3) 20px
+      )`
     }
 }));
