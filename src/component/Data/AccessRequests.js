@@ -2,7 +2,7 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
 import { RangeSelectionModule } from '@ag-grid-enterprise/range-selection';
 import { RowGroupingModule } from '@ag-grid-enterprise/row-grouping';
 import { RichSelectModule } from '@ag-grid-enterprise/rich-select';
-import { SetFilterModule } from '@ag-grid-enterprise/set-filter';
+import 'ag-grid-enterprise';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
@@ -66,7 +66,6 @@ function AccessRequests() {
         RangeSelectionModule, 
         RowGroupingModule, 
         RichSelectModule,
-        SetFilterModule
     ], []);
 
     const frameworkComponents = {
@@ -80,11 +79,13 @@ function AccessRequests() {
             headerName: 'Last Updated',
             width: 260,
             cellRenderer: 'timeRenderer',
-            sort: 'desc'
+            sort: 'desc',
+            filter: 'agDateColumnFilter'
         },
         {
             field: 'project._id',
-            headerName: 'Project ID'
+            headerName: 'Project Key',
+            filter: 'agSetColumnFilter'
         },
         {
             field: 'project.name',
@@ -99,28 +100,33 @@ function AccessRequests() {
         {
             field: 'accessRequestedFor._id',
             headerName: 'Requested For',
-            valueFormatter: userIDFormatter
+            valueFormatter: userIDFormatter,
+            filter: 'agSetColumnFilter'
         },
         {
             field: 'applicant',
             headerName: 'Raised By',
-            valueFormatter: userIDFormatter
+            valueFormatter: userIDFormatter,
+            filter: 'agSetColumnFilter'
         },
         {
             field: 'status',
             headerName: 'Status',
-            cellStyle: accessRequestStatusStyler
+            cellStyle: accessRequestStatusStyler,
+            filter: 'agSetColumnFilter'
         },
         {
             cellRenderer: 'accessRequestActionsRenderer',
-            width: 180
+            width: 180,
+            filter: false,
+            sortable: false
         }
     ], []);
 
     const defaultColDef = useMemo(()=> ({
         resizable: true,
         sortable: true,
-        filter: true,
+        filter: 'agTextColumnFilter',
         floatingFilter: true,
         width: 150
     }), []);

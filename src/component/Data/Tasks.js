@@ -2,6 +2,7 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
 import { RangeSelectionModule } from '@ag-grid-enterprise/range-selection';
 import { RowGroupingModule } from '@ag-grid-enterprise/row-grouping';
 import { RichSelectModule } from '@ag-grid-enterprise/rich-select';
+import 'ag-grid-enterprise';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
@@ -71,7 +72,8 @@ function Tasks() {
             headerName: 'Last Updated',
             width: 260,
             cellRenderer: 'timeRenderer',
-            sort: 'desc'
+            sort: 'desc',
+            filter: 'agDateColumnFilter'
         },
         {
             field: 'title',
@@ -80,20 +82,31 @@ function Tasks() {
         },
         {
             field: 'assignee',
-            valueFormatter: userIDFormatter
+            valueFormatter: userIDFormatter,
+            filter: 'agSetColumnFilter'
         },
         {
             field: 'reporter',
-            valueFormatter: userIDFormatter
+            valueFormatter: userIDFormatter,
+            filter: 'agSetColumnFilter'
         },
         {
-            field: 'status'
+            field: 'status',
+            filter: 'agSetColumnFilter'
+        },
+        {
+            headerName: '',
+            // cellRenderer: 'taskActionsRenderer',
+            filter: false,
+            sortable: false
         }
     ], []);
 
     const defaultColDef = useMemo(()=> ({
         resizable: true,
         sortable: true,
+        filter: 'agTextColumnFilter',
+        floatingFilter: true,
         width: 150
     }), []);
 

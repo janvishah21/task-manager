@@ -2,6 +2,7 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
 import { RangeSelectionModule } from '@ag-grid-enterprise/range-selection';
 import { RowGroupingModule } from '@ag-grid-enterprise/row-grouping';
 import { RichSelectModule } from '@ag-grid-enterprise/rich-select';
+import 'ag-grid-enterprise';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
@@ -78,11 +79,13 @@ function Projects() {
             headerName: 'Last Updated',
             width: 260,
             cellRenderer: 'timeRenderer',
-            sort: 'desc'
+            sort: 'desc',
+            filter: 'agDateColumnFilter'
         },
         {
             field: 'project._id',
-            headerName: 'Project Key'
+            headerName: 'Project Key',
+            filter: 'agSetColumnFilter'
         },
         {
             field: 'project.name',
@@ -95,18 +98,23 @@ function Projects() {
         {
             field: 'project.owner',
             headerName: 'Owner',
-            valueFormatter: userObjectFormatter
+            valueFormatter: userObjectFormatter,
+            filter: 'agSetColumnFilter'
         },
         {
             field: 'accessible',
             headerName: '',
-            cellRenderer: 'projectActionsRenderer'
+            cellRenderer: 'projectActionsRenderer',
+            filter: false,
+            sortable: false
         }
     ], []);
 
     const defaultColDef = useMemo(()=> ({
         resizable: true,
         sortable: true,
+        filter: 'agTextColumnFilter',
+        floatingFilter: true,
         width: 150
     }), []);
 
@@ -114,7 +122,8 @@ function Projects() {
         modules,
         frameworkComponents,
         defaultColDef,
-        columnDefs
+        columnDefs,
+        pagination: true
     };
 
     return (
