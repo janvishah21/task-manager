@@ -1,6 +1,7 @@
 import Toolbar from '@mui/material/Toolbar';
 import { AppBar } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import Typography from '@mui/material/Typography';
 import { Grid } from '@mui/material';
 import { Link } from '@mui/material';
@@ -23,7 +24,10 @@ function Footer() {
                             >
                                 Developed by 
                                 <Link href={AUTHOR_LINKEDIN_URL} style={{textDecoration: 'none'}} target="_blank">
-                                    <span className={styles.authorName}>{AUTHOR_NAME}</span>
+                                    <span className={styles.authorName}>
+                                        {AUTHOR_NAME}
+                                        <sup><LinkedInIcon fontSize="inherit" /></sup>
+                                    </span>
                                 </Link>
                             </Typography>
                         </Grid>

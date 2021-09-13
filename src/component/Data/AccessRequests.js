@@ -119,6 +119,13 @@ function AccessRequests() {
         width: 150
     }), []);
 
+    const gridOptions = {
+        modules,
+        frameworkComponents,
+        defaultColDef,
+        columnDefs
+    };
+
     return (
         <>
             <div className={`ag-theme-alpine ${styles.root}`}>
@@ -143,10 +150,7 @@ function AccessRequests() {
                 <AgGridReact 
                     reactUi="true"
                     className="ag-theme-alpine"
-                    modules={modules}
-                    frameworkComponents={frameworkComponents}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
+                    gridOptions={gridOptions}
                     rowData={rowData}
                 />
             </div>
