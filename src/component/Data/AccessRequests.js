@@ -2,6 +2,7 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
 import { RangeSelectionModule } from '@ag-grid-enterprise/range-selection';
 import { RowGroupingModule } from '@ag-grid-enterprise/row-grouping';
 import { RichSelectModule } from '@ag-grid-enterprise/rich-select';
+import { SetFilterModule } from '@ag-grid-enterprise/set-filter';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
@@ -64,7 +65,9 @@ function AccessRequests() {
         ClientSideRowModelModule, 
         RangeSelectionModule, 
         RowGroupingModule, 
-        RichSelectModule], []);
+        RichSelectModule,
+        SetFilterModule
+    ], []);
 
     const frameworkComponents = {
         timeRenderer: TimeRenderer,
@@ -90,7 +93,8 @@ function AccessRequests() {
         {
             field: 'project.owner',
             headerName: 'Project Admin',
-            valueFormatter: userIDFormatter
+            valueFormatter: userIDFormatter,
+            filter: 'agSetColumnFilter'
         },
         {
             field: 'accessRequestedFor._id',
@@ -116,6 +120,8 @@ function AccessRequests() {
     const defaultColDef = useMemo(()=> ({
         resizable: true,
         sortable: true,
+        filter: true,
+        floatingFilter: true,
         width: 150
     }), []);
 
@@ -123,7 +129,8 @@ function AccessRequests() {
         modules,
         frameworkComponents,
         defaultColDef,
-        columnDefs
+        columnDefs,
+        pagination: true
     };
 
     return (

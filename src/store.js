@@ -10,17 +10,14 @@ const middleware = [thunk];
 const store = createStore(
     rootReducer,
     persistedState,
-    compose(
-        applyMiddleware(...middleware),
-        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-    )
+    applyMiddleware(...middleware),
 );
 
 store.subscribe(() => {
     saveState({
         pageContentState: store.getState().pageContentState,
         auth: store.getState().auth,
-        releases: store.getState().releases
+        releases: store.getState().releases,
     });
 });
 
