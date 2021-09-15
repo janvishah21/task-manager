@@ -6,6 +6,9 @@ import App from './App/App';
 import reportWebVitals from './reportWebVitals';
 import store from './store';
 
+import { LicenseManager } from "ag-grid-enterprise";
+LicenseManager.setLicenseKey(process.env.REACT_APP_AG_GRID_LICENSE_KEY);
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
