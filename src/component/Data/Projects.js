@@ -1,7 +1,3 @@
-import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
-import { RangeSelectionModule } from '@ag-grid-enterprise/range-selection';
-import { RowGroupingModule } from '@ag-grid-enterprise/row-grouping';
-import { RichSelectModule } from '@ag-grid-enterprise/rich-select';
 import 'ag-grid-enterprise';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
@@ -13,10 +9,10 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { AgGridReact } from 'ag-grid-react';
 import { projectsStyles } from '../../styles/Projects.style';
 import { getProjects } from '../../service/project.service';
-import TimeRenderer from '../shared/grid/cell-renderers/TimeRenderer';
+import { defaultModules, defaultFrameworkComponents, defaultColDef, defaultGridOptions } from '../shared/grid/defaults';
 import ProcessNameRenderer from '../shared/grid/cell-renderers/ProcessNameRenderer';
 import ProjectActionsRenderer from '../shared/grid/cell-renderers/ProjectActionsRenderer';
-import { userObjectFormatter } from '../shared/grid/formatters';
+import { userIDFormatter } from '../shared/grid/formatters';
 import { updateAuth } from '../../state-management/actions/Auth.actions';
 import { updatePopUpState } from '../../state-management/actions/PopUp.actions';
 import { updateNotificationState } from '../../state-management/actions/Notification.actions';
@@ -28,50 +24,36 @@ function Projects() {
 
     const styles = projectsStyles();
 
-    const [rowData, setRowData] = useState([]);
+    const [rowData, setRowData] = useState();
+    const [gridApi, setGridApi] = useState(null);
 
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth);
     const popUpState = useSelector(state => state.popUp);
 
-    useEffect(() => {
-        const getAllProjects = async () => {
-            let { data, error } = await getProjects(user.token);
-            if (error) {
-                if (error.status === 408) {
-                    dispatch(updateNotificationState({
-                        isOpen: true,
-                        message: 'Session Expired, Please Login Again !',
-                        type: 'error'
-                    }));
-                    dispatch(updateAuth({}));
-                    dispatch(updatePopUpState({ login: true }));
-                    return;
-                }
-                error = await error.json();
+    const getAllProjects = async () => {
+        let { data, error } = await getProjects(user.token);
+        if (error) {
+            if (error.status === 408) {
                 dispatch(updateNotificationState({
                     isOpen: true,
-                    message: error.message,
+                    message: 'Session Expired, Please Login Again !',
                     type: 'error'
                 }));
-            } else {
-                setRowData(data || []);
+                dispatch(updateAuth({}));
+                dispatch(updatePopUpState({ login: true }));
+                return;
             }
+            error = await error.json();
+            dispatch(updateNotificationState({
+                isOpen: true,
+                message: error.message,
+                type: 'error'
+            }));
+        } else {
+            setRowData(data || []);
         }
-        getAllProjects();
-    }, []);
-
-    const modules = useMemo( ()=> [
-        ClientSideRowModelModule, 
-        RangeSelectionModule, 
-        RowGroupingModule, 
-        RichSelectModule], []);
-
-    const frameworkComponents = {
-        timeRenderer: TimeRenderer,
-        processNameRenderer: ProcessNameRenderer,
-        projectActionsRenderer: ProjectActionsRenderer
-    };
+    }
 
     const columnDefs = useMemo(() => [
         {
@@ -96,10 +78,9 @@ function Projects() {
             width: 300
         },
         {
-            field: 'project.owner',
+            field: 'project.owner._id',
             headerName: 'Owner',
-            valueFormatter: userObjectFormatter,
-            filter: 'agSetColumnFilter'
+            valueFormatter: userIDFormatter,
         },
         {
             field: 'accessible',
@@ -110,20 +91,24 @@ function Projects() {
         }
     ], []);
 
-    const defaultColDef = useMemo(()=> ({
-        resizable: true,
-        sortable: true,
-        filter: 'agTextColumnFilter',
-        floatingFilter: true,
-        width: 150
-    }), []);
+    const frameworkComponents = {
+        ...defaultFrameworkComponents,
+        processNameRenderer: ProcessNameRenderer,
+        projectActionsRenderer: ProjectActionsRenderer
+    };
+
+    const onGridReady = (params) => {
+        setGridApi(params.api);
+        params.api.showLoadingOverlay();
+        getAllProjects();
+    }
 
     const gridOptions = {
-        modules,
+        ...defaultGridOptions,
         frameworkComponents,
         defaultColDef,
         columnDefs,
-        pagination: true
+        onGridReady
     };
 
     return (
@@ -150,6 +135,7 @@ function Projects() {
                 <AgGridReact 
                     reactUi="true"
                     className="ag-theme-alpine"
+                    modules={defaultModules}
                     gridOptions={gridOptions}
                     rowData={rowData}
                 />

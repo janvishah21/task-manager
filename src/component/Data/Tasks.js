@@ -1,7 +1,3 @@
-import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
-import { RangeSelectionModule } from '@ag-grid-enterprise/range-selection';
-import { RowGroupingModule } from '@ag-grid-enterprise/row-grouping';
-import { RichSelectModule } from '@ag-grid-enterprise/rich-select';
 import 'ag-grid-enterprise';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
@@ -12,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import { AgGridReact } from 'ag-grid-react';
 import { tasksStyles } from '../../styles/Tasks.style';
 import { getTasks } from '../../service/task.service';
-import TimeRenderer from '../shared/grid/cell-renderers/TimeRenderer';
+import { defaultModules, defaultFrameworkComponents, defaultColDef, defaultGridOptions } from '../shared/grid/defaults';
 import { userIDFormatter } from '../shared/grid/formatters';
 import { updateNotificationState } from '../../state-management/actions/Notification.actions';
 import { updatePopUpState } from '../../state-management/actions/PopUp.actions';
@@ -22,49 +18,36 @@ function Tasks() {
 
     const styles = tasksStyles();
 
-    const [rowData, setRowData] = useState([]);
+    const [rowData, setRowData] = useState();
+    let gridApi = null;
 
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth);
     const pageContentState = useSelector(state => state.pageContentState);
 
-    useEffect(() => {
-        const getAllTasks = async () => {
-            let { data, error } = await getTasks(pageContentState.attrs.project.project._id, user.token);
-            if (error) {
-                if (error.status === 408) {
-                    dispatch(updateNotificationState({
-                        isOpen: true,
-                        message: 'Session Expired, Please Login Again !',
-                        type: 'error'
-                    }));
-                    dispatch(updateAuth({}));
-                    dispatch(updatePopUpState({ login: true }));
-                    return;
-                }
-                error = await error.json();
+    const getAllTasks = async () => {
+        let { data, error } = await getTasks(pageContentState.attrs.project.project._id, user.token);
+        if (error) {
+            if (error.status === 408) {
                 dispatch(updateNotificationState({
                     isOpen: true,
-                    message: error.message,
+                    message: 'Session Expired, Please Login Again !',
                     type: 'error'
                 }));
-            } else {
-                setRowData(data || []);
-                console.log(data)
+                dispatch(updateAuth({}));
+                dispatch(updatePopUpState({ login: true }));
+                return;
             }
+            error = await error.json();
+            dispatch(updateNotificationState({
+                isOpen: true,
+                message: error.message,
+                type: 'error'
+            }));
+        } else {
+            setRowData(data || []);
         }
-        getAllTasks();
-    }, []);
-
-    const modules = useMemo( ()=> [
-        ClientSideRowModelModule, 
-        RangeSelectionModule, 
-        RowGroupingModule, 
-        RichSelectModule], []);
-
-    const frameworkComponents = {
-        timeRenderer: TimeRenderer
-    };
+    }
 
     const columnDefs = useMemo(() => [
         {
@@ -102,19 +85,18 @@ function Tasks() {
         }
     ], []);
 
-    const defaultColDef = useMemo(()=> ({
-        resizable: true,
-        sortable: true,
-        filter: 'agTextColumnFilter',
-        floatingFilter: true,
-        width: 150
-    }), []);
+    const onGridReady = (params) => {
+        gridApi = params.api;
+        gridApi.showLoadingOverlay();
+        getAllTasks();
+    }
 
     const gridOptions = {
-        modules,
-        frameworkComponents,
+        ...defaultGridOptions,
+        frameworkComponents: defaultFrameworkComponents,
         defaultColDef,
-        columnDefs
+        columnDefs,
+        onGridReady
     };
 
     return (
@@ -137,6 +119,7 @@ function Tasks() {
             <AgGridReact 
                 reactUi="true"
                 className="ag-theme-alpine"
+                modules={defaultModules}
                 gridOptions={gridOptions}
                 rowData={rowData}
             />

@@ -1,7 +1,3 @@
-import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
-import { RangeSelectionModule } from '@ag-grid-enterprise/range-selection';
-import { RowGroupingModule } from '@ag-grid-enterprise/row-grouping';
-import { RichSelectModule } from '@ag-grid-enterprise/rich-select';
 import 'ag-grid-enterprise';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
@@ -13,7 +9,7 @@ import { AgGridReact } from 'ag-grid-react';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { accessRequestsStyles } from '../../styles/AccessRequests.style';
 import { getAccessRequests } from '../../service/access-request.service';
-import TimeRenderer from '../shared/grid/cell-renderers/TimeRenderer';
+import { defaultModules, defaultFrameworkComponents, defaultColDef, defaultGridOptions } from '../shared/grid/defaults';
 import AccessRequestActionsRenderer from '../shared/grid/cell-renderers/AccessRequestActionsRenderer';
 import { userIDFormatter } from '../shared/grid/formatters';
 import { updateAuth } from '../../state-management/actions/Auth.actions';
@@ -28,48 +24,39 @@ function AccessRequests() {
 
     const styles = accessRequestsStyles();
 
-    const [rowData, setRowData] = useState([]);
+    const [rowData, setRowData] = useState();
+    const [gridApi, setGridApi] = useState(null);
 
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth);
     const popUpState = useSelector(state => state.popUp);
 
-    useEffect(() => {
-        const getAllAccessRequests = async () => {
-            let { data, error } = await getAccessRequests(user.token);
-            if (error) {
-                if (error.status === 408) {
-                    dispatch(updateNotificationState({
-                        isOpen: true,
-                        message: 'Session Expired, Please Login Again !',
-                        type: 'error'
-                    }));
-                    dispatch(updateAuth({}));
-                    dispatch(updatePopUpState({ login: true }));
-                    return;
-                }
-                error = await error.json();
+    const getAllAccessRequests = async () => {
+        let { data, error } = await getAccessRequests(user.token);
+        if (error) {
+            if (error.status === 408) {
                 dispatch(updateNotificationState({
                     isOpen: true,
-                    message: error.message,
+                    message: 'Session Expired, Please Login Again !',
                     type: 'error'
                 }));
-            } else {
-                setRowData(data || []);
+                dispatch(updateAuth({}));
+                dispatch(updatePopUpState({ login: true }));
+                return;
             }
+            error = await error.json();
+            dispatch(updateNotificationState({
+                isOpen: true,
+                message: error.message,
+                type: 'error'
+            }));
+        } else {
+            setRowData(data || []);
         }
-        getAllAccessRequests();
-    }, []);
-
-    const modules = useMemo( ()=> [
-        ClientSideRowModelModule, 
-        RangeSelectionModule, 
-        RowGroupingModule, 
-        RichSelectModule,
-    ], []);
+    }
 
     const frameworkComponents = {
-        timeRenderer: TimeRenderer,
+        ...defaultFrameworkComponents,
         accessRequestActionsRenderer: AccessRequestActionsRenderer
     };
 
@@ -123,20 +110,18 @@ function AccessRequests() {
         }
     ], []);
 
-    const defaultColDef = useMemo(()=> ({
-        resizable: true,
-        sortable: true,
-        filter: 'agTextColumnFilter',
-        floatingFilter: true,
-        width: 150
-    }), []);
+    const onGridReady = (params) => {
+        setGridApi(params.api);
+        params.api.showLoadingOverlay();
+        getAllAccessRequests();
+    }
 
     const gridOptions = {
-        modules,
+        ...defaultGridOptions,
         frameworkComponents,
         defaultColDef,
         columnDefs,
-        pagination: true
+        onGridReady
     };
 
     return (
@@ -163,6 +148,7 @@ function AccessRequests() {
                 <AgGridReact 
                     reactUi="true"
                     className="ag-theme-alpine"
+                    modules={defaultModules}
                     gridOptions={gridOptions}
                     rowData={rowData}
                 />
@@ -172,6 +158,7 @@ function AccessRequests() {
                 fullWidth={true}
                 openPopup={popUpState.createAccessRequest}
                 onClose={() => dispatch(updatePopUpState({ createAccessRequest: false }))}
+                showCloseBtn={true}
             >
                 <CreateAccessRequest />
             </Popup>

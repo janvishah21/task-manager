@@ -10,23 +10,25 @@ function ProjectNameRenderer(params) {
 
     return (
         <>
-            <span
-                onClick={() => dispatch(updatePageContentState({
-                    page: 'tasks',
-                    attrs: {
-                        project: params.data
-                    }
-                }))}
-                style={{ cursor: 'pointer', color: 'blue' }}
-            >
-                {params.value}
-                <sup>
-                    <OpenInNewOutlinedIcon 
-                        fontSize="inherit"
-                    />
-                </sup>
-            </span>
-            
+            {
+                params.data.accessible ?
+                    <span
+                        onClick={() => dispatch(updatePageContentState({
+                            page: 'tasks',
+                            attrs: {
+                                project: params.data
+                            }
+                        }))}
+                        style={{ cursor: 'pointer', color: 'blue' }}
+                    >
+                        {params.value}
+                        <sup>
+                            <OpenInNewOutlinedIcon 
+                                fontSize="inherit"
+                            />
+                        </sup>
+                    </span> : params.value
+            }
         </>
     )
 }
