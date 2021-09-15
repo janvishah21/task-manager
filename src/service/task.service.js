@@ -1,9 +1,11 @@
-export const getTasks = async (projectId, token, all = true) => {
+import { getToken } from "../state-management/storeUtils";
+
+export const getTasks = async (projectId, all = true) => {
     try {
         const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/projects/${projectId}/tasks`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${getToken()}`
             }
         });
 

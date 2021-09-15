@@ -1,9 +1,11 @@
-export const getAccessRequests = async (token) => {
+import { getToken } from '../state-management/storeUtils';
+
+export const getAccessRequests = async () => {
     try {
         const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/access-requests`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${getToken()}`
             }
         });
 
@@ -22,13 +24,13 @@ export const getAccessRequests = async (token) => {
     }
 }
 
-export const raiseAccessRequest = async (request, token) => {
+export const raiseAccessRequest = async (request) => {
     try {
         const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/access-requests`, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${getToken()}`
             },
             body: JSON.stringify({
                 ...request
@@ -50,13 +52,13 @@ export const raiseAccessRequest = async (request, token) => {
     }
 }
 
-export const updateAccessRequest = async (requestId, update, token) => {
+export const updateAccessRequest = async (requestId, update) => {
     try {
         const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/access-requests/${requestId}`, {
             method: 'PATCH',
             headers: {
                 'Content-type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${getToken()}`
             },
             body: JSON.stringify({
                 ...update

@@ -12,10 +12,11 @@ import { getProjects } from '../../service/project.service';
 import { defaultModules, defaultFrameworkComponents, defaultColDef, defaultGridOptions } from '../shared/grid/defaults';
 import ProcessNameRenderer from '../shared/grid/cell-renderers/ProcessNameRenderer';
 import ProjectActionsRenderer from '../shared/grid/cell-renderers/ProjectActionsRenderer';
-import { userIDFormatter } from '../shared/grid/formatters';
+import UserIDRenderer from '../shared/grid/cell-renderers/UserIDRenderer';
 import { updateAuth } from '../../state-management/actions/Auth.actions';
 import { updatePopUpState } from '../../state-management/actions/PopUp.actions';
 import { updateNotificationState } from '../../state-management/actions/Notification.actions';
+import { reloadUsersState } from '../../state-management/storeUtils';
 import Popup from '../shared/Popup';
 import CreateProject from '../pages/CreateProject';
 import Controls from '../controls/Controls';
@@ -30,9 +31,15 @@ function Projects() {
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth);
     const popUpState = useSelector(state => state.popUp);
+    
+    const updateUsersState = projects => {
+        const ids = new Set();
+        projects.forEach(project => ids.add(project.project.owner._id));
+        reloadUsersState([ ...ids ]);
+    }
 
     const getAllProjects = async () => {
-        let { data, error } = await getProjects(user.token);
+        let { data, error } = await getProjects();
         if (error) {
             if (error.status === 408) {
                 dispatch(updateNotificationState({
@@ -52,6 +59,7 @@ function Projects() {
             }));
         } else {
             setRowData(data || []);
+            updateUsersState(data || []);
         }
     }
 
@@ -80,21 +88,23 @@ function Projects() {
         {
             field: 'project.owner._id',
             headerName: 'Owner',
-            valueFormatter: userIDFormatter,
+            cellRenderer: 'userIDRenderer'
         },
         {
             field: 'accessible',
             headerName: '',
             cellRenderer: 'projectActionsRenderer',
             filter: false,
-            sortable: false
+            sortable: false,
+            width: 170
         }
     ], []);
 
     const frameworkComponents = {
         ...defaultFrameworkComponents,
         processNameRenderer: ProcessNameRenderer,
-        projectActionsRenderer: ProjectActionsRenderer
+        projectActionsRenderer: ProjectActionsRenderer,
+        userIDRenderer: UserIDRenderer
     };
 
     const onGridReady = (params) => {

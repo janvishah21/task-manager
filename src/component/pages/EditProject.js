@@ -41,7 +41,7 @@ function EditProject({ project }) {
     const handleSubmit = async (e) => {
         setLoading(true);
         e.preventDefault();
-        const { data, error } = await updateProjectDetails(project._id, values, user.token);
+        const { data, error } = await updateProjectDetails(project._id, values);
         if (data) {
             dispatch(updateNotificationState({
                 isOpen: true,

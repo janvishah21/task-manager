@@ -43,7 +43,7 @@ function Header() {
     useEffect(() => {
         const getMyAvatar = async () => {
             if (user && user.user) {
-                const { data, error } = await getAvatar(user.user._id, user.token);
+                const { data, error } = await getAvatar(user.user._id);
                 if (!error) {
                     try {
                         setProfileAvatar(URL.createObjectURL(data));
@@ -77,7 +77,7 @@ function Header() {
     const handleLogout = async (all = false) => {
         // return dispatch(updateAuth({}));
         dispatch(updateLoaderState(true));
-        const { data, error } = await logout(user.token, all);
+        const { data, error } = await logout(all);
 
         if (data) {
             dispatch(updateAuth({}));

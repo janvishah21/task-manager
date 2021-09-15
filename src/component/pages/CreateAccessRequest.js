@@ -53,7 +53,7 @@ function CreateAccessRequest() {
             return undefined;
 
         (async () => {
-            const { data, error } = await getUsers(user.token);
+            const { data, error } = await getUsers();
 
             if (!error && data) {
                 if (active) {
@@ -79,7 +79,7 @@ function CreateAccessRequest() {
             return undefined;
 
         (async () => {
-            const { data, error } = await getProjects(user.token);
+            const { data, error } = await getProjects();
 
             if (!error && data) {
                 if (active) {
@@ -102,7 +102,7 @@ function CreateAccessRequest() {
         setLoading(true);
         e.preventDefault();
         console.log(values);
-        const { data, error } = await raiseAccessRequest(values, user.token);
+        const { data, error } = await raiseAccessRequest(values);
         if (data) {
             dispatch(updateNotificationState({
                 isOpen: true,

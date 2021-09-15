@@ -24,7 +24,7 @@ function ProjectActionsRenderer(params) {
         const { data, error } = await raiseAccessRequest({
             project: project._id,
             accessRequestedFor: user.user._id
-        }, user.token);
+        });
         if (error) {
             dispatch(updateNotificationState({
                 isOpen: true,

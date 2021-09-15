@@ -52,7 +52,7 @@ function EditAccessRequest({ request }) {
             return undefined;
 
         (async () => {
-            const { data, error } = await getUsers(user.token);
+            const { data, error } = await getUsers();
 
             if (!error && data) {
                 if (active) {
@@ -74,7 +74,7 @@ function EditAccessRequest({ request }) {
     const handleSubmit = async (e) => {
         setLoading(true);
         e.preventDefault();
-        const { data, error } = await updateAccessRequest(request._id, values, user.token);
+        const { data, error } = await updateAccessRequest(request._id, values);
         if (data) {
             dispatch(updateNotificationState({
                 isOpen: true,

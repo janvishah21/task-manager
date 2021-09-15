@@ -1,9 +1,11 @@
-export const getProjects = async (token, all = true) => {
+import { getToken } from "../state-management/storeUtils";
+
+export const getProjects = async (all = true) => {
     try {
         const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/projects?all=${all}`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${getToken()}`
             }
         });
 
@@ -22,13 +24,13 @@ export const getProjects = async (token, all = true) => {
     }
 }
 
-export const createProject = async (token, project) => {
+export const createProject = async (project) => {
     try {
         const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/projects`, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${getToken()}`
             },
             body: JSON.stringify(project)
         });
@@ -48,13 +50,13 @@ export const createProject = async (token, project) => {
     }
 }
 
-export const updateProjectDetails = async (projectId, update, token) => {
+export const updateProjectDetails = async (projectId, update) => {
     try {
         const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/projects/${projectId}`, {
             method: 'PATCH',
             headers: {
                 'Content-type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${getToken()}`
             },
             body: JSON.stringify({
                 ...update

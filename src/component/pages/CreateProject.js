@@ -33,7 +33,7 @@ function CreateProject() {
     const handleSubmit = async (e) => {
         setLoading(true);
         e.preventDefault();
-        const { data, error } = await createProject(user.token, values);
+        const { data, error } = await createProject(values);
         if (data) {
             dispatch(updateNotificationState({
                 isOpen: true,
