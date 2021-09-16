@@ -80,6 +80,7 @@ function AccessRequestActionsRenderer(params) {
             ...loading,
             state: false
         });
+        params.cb();
     }
 
     const isAllowed = (action) => {
@@ -182,6 +183,7 @@ function AccessRequestActionsRenderer(params) {
             >
                 <EditAccessRequest 
                     request={params.data}
+                    cb={params.cb}
                 />
             </Popup>
         </div>

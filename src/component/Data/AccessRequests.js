@@ -12,6 +12,7 @@ import { getAccessRequests } from '../../service/access-request.service';
 import { defaultModules, defaultFrameworkComponents, defaultColDef, defaultGridOptions } from '../shared/grid/defaults';
 import AccessRequestActionsRenderer from '../shared/grid/cell-renderers/AccessRequestActionsRenderer';
 import UserIDRenderer from '../shared/grid/cell-renderers/UserIDRenderer';
+import { userIDFormatter } from '../shared/grid/formatters';
 import { updateAuth } from '../../state-management/actions/Auth.actions';
 import { updateNotificationState } from '../../state-management/actions/Notification.actions';
 import { updatePopUpState } from '../../state-management/actions/PopUp.actions';
@@ -42,7 +43,7 @@ function AccessRequests() {
         reloadUsersState([ ...ids ]);
     }
 
-    const getAllAccessRequests = async () => {
+    const getAllAccessRequests = async (alreadyRendered = false) => {
         let { data, error } = await getAccessRequests();
         if (error) {
             if (error.status === 408) {
@@ -95,19 +96,28 @@ function AccessRequests() {
             field: 'project.owner',
             headerName: 'Project Admin',
             cellRenderer: 'userIDRenderer',
-            filter: 'agSetColumnFilter'
+            filter: 'agSetColumnFilter',
+            filterParams: {
+                valueFormatter: userIDFormatter
+            }
         },
         {
             field: 'accessRequestedFor._id',
             headerName: 'Requested For',
             cellRenderer: 'userIDRenderer',
-            filter: 'agSetColumnFilter'
+            filter: 'agSetColumnFilter',
+            filterParams: {
+                valueFormatter: userIDFormatter
+            }
         },
         {
             field: 'applicant',
             headerName: 'Raised By',
             cellRenderer: 'userIDRenderer',
-            filter: 'agSetColumnFilter'
+            filter: 'agSetColumnFilter',
+            filterParams: {
+                valueFormatter: userIDFormatter
+            }
         },
         {
             field: 'status',
@@ -117,6 +127,9 @@ function AccessRequests() {
         },
         {
             cellRenderer: 'accessRequestActionsRenderer',
+            cellRendererParams: {
+                cb: getAllAccessRequests
+            },
             width: 180,
             filter: false,
             sortable: false
@@ -173,7 +186,9 @@ function AccessRequests() {
                 onClose={() => dispatch(updatePopUpState({ createAccessRequest: false }))}
                 showCloseBtn={true}
             >
-                <CreateAccessRequest />
+                <CreateAccessRequest 
+                    cb={getAllAccessRequests}
+                />
             </Popup>
         </>
     )

@@ -5,6 +5,7 @@ const initialState = {
     signUp: false,
     createProject: false,
     createAccessRequest: false,
+    createTask: false,
     editProject: undefined,
     editAccessRequest: undefined
 };

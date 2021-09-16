@@ -13,6 +13,7 @@ import { defaultModules, defaultFrameworkComponents, defaultColDef, defaultGridO
 import ProcessNameRenderer from '../shared/grid/cell-renderers/ProcessNameRenderer';
 import ProjectActionsRenderer from '../shared/grid/cell-renderers/ProjectActionsRenderer';
 import UserIDRenderer from '../shared/grid/cell-renderers/UserIDRenderer';
+import { userIDFormatter } from '../shared/grid/formatters';
 import { updateAuth } from '../../state-management/actions/Auth.actions';
 import { updatePopUpState } from '../../state-management/actions/PopUp.actions';
 import { updateNotificationState } from '../../state-management/actions/Notification.actions';
@@ -38,7 +39,7 @@ function Projects() {
         reloadUsersState([ ...ids ]);
     }
 
-    const getAllProjects = async () => {
+    const getAllProjects = async (alreadyRendered = false) => {
         let { data, error } = await getProjects();
         if (error) {
             if (error.status === 408) {
@@ -88,15 +89,21 @@ function Projects() {
         {
             field: 'project.owner._id',
             headerName: 'Owner',
-            cellRenderer: 'userIDRenderer'
+            cellRenderer: 'userIDRenderer',
+            filter: 'agSetColumnFilter',
+            filterParams: {
+                valueFormatter: userIDFormatter
+            }
         },
         {
             field: 'accessible',
             headerName: '',
             cellRenderer: 'projectActionsRenderer',
+            cellRendererParams: {
+                cb: getAllProjects
+            },
             filter: false,
-            sortable: false,
-            width: 170
+            sortable: false
         }
     ], []);
 
@@ -156,7 +163,9 @@ function Projects() {
                 openPopup={popUpState.createProject}
                 onClose={() => dispatch(updatePopUpState({ createProject: false }))}
             >
-                <CreateProject />
+                <CreateProject 
+                    cb={getAllProjects}
+                />
             </Popup>
         </>
     )

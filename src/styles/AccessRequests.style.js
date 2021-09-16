@@ -5,7 +5,7 @@ export const accessRequestsStyles = makeStyles(theme => ({
         display: 'flex',
         flexGrow: 1,
         flexDirection: 'column',
-        height: '70vh'
+        height: '80vh'
     },
     gridHeader: {
         display: 'grid',

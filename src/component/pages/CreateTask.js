@@ -1,21 +1,20 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
-import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
-import { editAccessRequestStyles } from '../../styles/EditAccessRequest.style';
+import { createTaskStyles } from '../../styles/CreateTask.style';
 import { FormUtil, Form } from '../shared/Formutil';
-import { updateAccessRequest } from '../../service/access-request.service';
-import { getUsers } from '../../service/user.service';
 import { updateNotificationState } from '../../state-management/actions/Notification.actions';
-
-import Controls from '../controls/Controls';
+import { createTask } from '../../service/task.service';
+import { getUsers } from '../../service/user.service';
 import { updatePopUpState } from '../../state-management/actions/PopUp.actions';
+import { USER_LABEL_REGEX } from '../../utils/const';
+import Controls from '../controls/Controls';
 
-function EditAccessRequest({ request, cb }) {
+function CreateTask({ projectId, cb }) {
 
-    const styles = editAccessRequestStyles();
+    const styles = createTaskStyles();
 
     const dispatch = useDispatch();
 
@@ -25,7 +24,7 @@ function EditAccessRequest({ request, cb }) {
 
     const [optionsOpen, setOptionsOpen] = useState(false);
     const [users, setUsers] = useState([]);
-    const optionsLoading = optionsOpen && users.length === 0;
+    const [optionsLoading, setOptionsLoading] = useState(false);
 
     const validate = (fieldValues = values) => {
         // ignore
@@ -41,12 +40,6 @@ function EditAccessRequest({ request, cb }) {
     } = FormUtil(initialValues, true, validate);
 
     useEffect(() => {
-        setValues({
-            ...request
-        });
-    }, [request]);
-
-    useEffect(() => {
         let active = true;
 
         if (!optionsLoading)
@@ -57,7 +50,7 @@ function EditAccessRequest({ request, cb }) {
 
             if (!error && data) {
                 if (active) {
-                    setUsers(data);
+                    setUsers(data); // TODO
                 }
             }
         })();
@@ -75,11 +68,11 @@ function EditAccessRequest({ request, cb }) {
     const handleSubmit = async (e) => {
         setLoading(true);
         e.preventDefault();
-        const { data, error } = await updateAccessRequest(request._id, values);
+        const { data, error } = await createTask(projectId, values);
         if (data) {
             dispatch(updateNotificationState({
                 isOpen: true,
-                message: 'Access Request Updated !',
+                message: 'New Task Created !',
                 type: 'success'
             }));
         } else if (error) {
@@ -91,35 +84,55 @@ function EditAccessRequest({ request, cb }) {
         }
         setLoading(false);
         cb();
-        dispatch(updatePopUpState({ editAccessRequest: undefined }));
+        dispatch(updatePopUpState({ createTask: false }));
     }
 
     const handleOptionChange = e => {
-        console.log(e.target.innerHTML);
+        const label = e.target.innerHTML.toLowerCase();
+        const matches = label.match(USER_LABEL_REGEX);
+        if (matches.length === 3)
+            setValues({
+                ...values,
+                assignee: matches[2]
+            });
     }
 
     return (
         <div className={styles.root}>
             <Form onSubmit={handleSubmit} className={styles.form}>
+                <Controls.Input
+                    label="Title"
+                    name="title"
+                    value={values._id}
+                    autoFocus
+                    onChange={handleInputChange}
+                />
+                <Controls.Input
+                    label="Task Description"
+                    name="description"
+                    multiline
+                    rows={3}
+                    value={values.description}
+                    onChange={handleInputChange}
+                />
                 <Autocomplete
                     open={optionsOpen}
                     onOpen={() => setOptionsOpen(true)}
                     onClose={() => setOptionsOpen(false)}
-                    value={values.accessRequestedFor}
-                    onChange={handleOptionChange} // TODO
+                    onChange={handleOptionChange}
                     options={users}
                     loading={optionsLoading}
                     isOptionEqualToValue={(option, value) => option._id === value._id}
                     getOptionLabel={option => `${option.name} (${option._id.toUpperCase()})`}
                     renderInput={(params) => 
                         <Controls.Input
-                            label="Requested For"
-                            name="accessRequestedFor"
+                            label="Assignee"
+                            name="assignee"
                             InputProps={{
                                 ...params.InputProps,
                                 endAdornment: (
                                     <>
-                                        { optionsLoading ? <CircularProgress color="inherit" size={20} /> : null }
+                                        { optionsLoading ? <CircularProgress size={20} /> : null }
                                         { params.InputProps.endAdornment }
                                     </>
                                 )
@@ -128,22 +141,13 @@ function EditAccessRequest({ request, cb }) {
                         />
                     }
                 />
-                <Controls.Input
-                    label="Request Details"
-                    name="description"
-                    multiline
-                    rows={2}
-                    value={values.description}
-                    onChange={handleInputChange}
-                />
                 <LoadingButton
                     className={styles.submitBtn}
                     type="submit"
-                    endIcon={<SaveOutlinedIcon />}
                     loading={loading}
                     variant="contained"
                 >
-                    Save
+                    Submit
                 </LoadingButton>
             </Form>
         </div>
@@ -151,11 +155,10 @@ function EditAccessRequest({ request, cb }) {
 }
 
 const initialValues = {
+    title: '',
     description: '',
-    accessRequestedFor: {
-        _id: '',
-        name: ''
-    }
+    assignee: '',
+    // attachment: '' // TODO
 }
 
-export default EditAccessRequest;
+export default CreateTask;

@@ -11,8 +11,9 @@ import { getProjects } from '../../service/project.service';
 import Controls from '../controls/Controls';
 import { getUsers } from '../../service/user.service';
 import { USER_LABEL_REGEX, PROJECT_LABEL_REGEX } from '../../utils/const';
+import { updatePopUpState } from '../../state-management/actions/PopUp.actions';
 
-function CreateAccessRequest() {
+function CreateAccessRequest({ cb }) {
 
     const styles = createAccessRequestStyles();
 
@@ -117,6 +118,8 @@ function CreateAccessRequest() {
             }));
         }
         setLoading(false);
+        cb();
+        dispatch(updatePopUpState({ createAccessRequest: false }));
     }
 
     const handleRequestorChange = e => {

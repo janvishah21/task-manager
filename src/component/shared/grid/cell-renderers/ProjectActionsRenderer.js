@@ -39,6 +39,7 @@ function ProjectActionsRenderer(params) {
             }));
         }
         setLoading(false);
+        params.cb();
     }
 
     return (
@@ -77,6 +78,7 @@ function ProjectActionsRenderer(params) {
             >
                 <EditProject 
                     project={params.data.project}
+                    cb={params.cb}
                 />
             </Popup>
         </>

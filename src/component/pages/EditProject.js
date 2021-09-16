@@ -6,10 +6,11 @@ import { editProjectStyles } from '../../styles/EditProject.style';
 import { FormUtil, Form } from '../shared/Formutil';
 import { updateProjectDetails } from '../../service/project.service';
 import { updateNotificationState } from '../../state-management/actions/Notification.actions';
+import { updatePopUpState } from '../../state-management/actions/PopUp.actions';
 
 import Controls from '../controls/Controls';
 
-function EditProject({ project }) {
+function EditProject({ project, cb }) {
 
     const styles = editProjectStyles();
 
@@ -56,6 +57,8 @@ function EditProject({ project }) {
             }));
         }
         setLoading(false);
+        cb();
+        dispatch(updatePopUpState({ editProject: undefined }));
     }
 
     return (

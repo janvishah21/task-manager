@@ -25,7 +25,7 @@ export const defaultColDef = {
     sortable: true,
     filter: 'agTextColumnFilter',
     floatingFilter: true,
-    width: 150
+    width: 180
 };
 
 export const defaultGridOptions = {
