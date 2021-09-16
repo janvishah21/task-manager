@@ -9,7 +9,6 @@ import { updateNotificationState } from '../../state-management/actions/Notifica
 import { createTask } from '../../service/task.service';
 import { getUsers } from '../../service/user.service';
 import { updatePopUpState } from '../../state-management/actions/PopUp.actions';
-import { USER_LABEL_REGEX } from '../../utils/const';
 import Controls from '../controls/Controls';
 
 function CreateTask({ projectId, cb }) {

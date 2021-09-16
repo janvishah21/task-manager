@@ -7,7 +7,8 @@ const initialState = {
     createAccessRequest: false,
     createTask: false,
     editProject: undefined,
-    editAccessRequest: undefined
+    editAccessRequest: undefined,
+    editTask: undefined
 };
 
 export default function(state = initialState, action) {

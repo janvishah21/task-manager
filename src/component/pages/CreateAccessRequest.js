@@ -27,6 +27,7 @@ function CreateAccessRequest({ cb }) {
         requestor: false,
         project: false
     });
+    const [requestorInputFieldValue, setRequestorInputFieldValue] = useState('');
     const [users, setUsers] = useState([]);
     const [projects, setProjects] = useState([]);
     const optionsLoading = {
@@ -50,11 +51,11 @@ function CreateAccessRequest({ cb }) {
     useEffect(() => {
         let active = true;
 
-        if (!optionsLoading.requestor)
+        if (!optionsLoading.requestor && requestorInputFieldValue === '')
             return undefined;
 
         (async () => {
-            const { data, error } = await getUsers();
+            const { data, error } = await getUsers(requestorInputFieldValue);
 
             if (!error && data) {
                 if (active) {
@@ -66,7 +67,7 @@ function CreateAccessRequest({ cb }) {
         return () => {
             active = false;
         }
-    }, [optionsLoading.requestor]);
+    }, [optionsLoading.requestor, requestorInputFieldValue]);
 
     useEffect(() => {
         if (!optionsOpen.requestor)
@@ -121,24 +122,26 @@ function CreateAccessRequest({ cb }) {
         dispatch(updatePopUpState({ createAccessRequest: false }));
     }
 
-    const handleRequestorChange = e => {
-        const label = e.target.innerHTML.toLowerCase();
-        const matches = label.match(USER_LABEL_REGEX);
-        if (matches.length === 3)
-            setValues({
-                ...values,
-                accessRequestedFor: matches[2]
-            });
+    const handleRequestorChange = (e, newVal) => {
+        setValues({
+            ...values,
+            accessRequestedFor: newVal?._id || ''
+        });
     }
 
-    const handleProjectChange = e => {
-        const label = e.target.innerHTML.toLowerCase();
-        const matches = label.match(PROJECT_LABEL_REGEX);
-        if (matches.length === 3)
-            setValues({
-                ...values,
-                project: matches[2]
-            });
+    const handleRequestorInputFieldChange = (e, newVal) => {
+        setRequestorInputFieldValue(newVal);
+        setValues({
+            ...values,
+            accessRequestedFor: newVal
+        });
+    }
+
+    const handleProjectChange = (e, newVal) => {
+        setValues({
+            ...values,
+            project: newVal?.project._id || ''
+        });
     }
 
     return (
@@ -149,6 +152,8 @@ function CreateAccessRequest({ cb }) {
                     onOpen={() => setOptionsOpen({ ...optionsOpen, requestor: true})}
                     onClose={() => setOptionsOpen({ ...optionsOpen, requestor: false})}
                     onChange={handleRequestorChange}
+                    inputValue={requestorInputFieldValue}
+                    onInputChange={handleRequestorInputFieldChange}
                     options={users}
                     loading={optionsLoading.requestor}
                     isOptionEqualToValue={(option, value) => option._id === value._id}
