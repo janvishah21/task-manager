@@ -23,8 +23,9 @@ function CreateTask({ projectId, cb }) {
     const [loading, setLoading] = useState(false);
 
     const [optionsOpen, setOptionsOpen] = useState(false);
+    const [inputFieldValue, setInputFieldValue] = useState('');
     const [users, setUsers] = useState([]);
-    const [optionsLoading, setOptionsLoading] = useState(false);
+    const optionsLoading = optionsOpen && users.length === 0;
 
     const validate = (fieldValues = values) => {
         // ignore
@@ -42,15 +43,15 @@ function CreateTask({ projectId, cb }) {
     useEffect(() => {
         let active = true;
 
-        if (!optionsLoading)
+        if (!optionsLoading && inputFieldValue === '')
             return undefined;
 
         (async () => {
-            const { data, error } = await getUsers();
+            const { data, error } = await getUsers(inputFieldValue);
 
             if (!error && data) {
                 if (active) {
-                    setUsers(data); // TODO
+                    setUsers(data);
                 }
             }
         })();
@@ -58,7 +59,7 @@ function CreateTask({ projectId, cb }) {
         return () => {
             active = false;
         }
-    }, [optionsLoading]);
+    }, [optionsLoading, inputFieldValue]);
 
     useEffect(() => {
         if (!optionsOpen)
@@ -87,14 +88,19 @@ function CreateTask({ projectId, cb }) {
         dispatch(updatePopUpState({ createTask: false }));
     }
 
-    const handleOptionChange = e => {
-        const label = e.target.innerHTML.toLowerCase();
-        const matches = label.match(USER_LABEL_REGEX);
-        if (matches.length === 3)
-            setValues({
-                ...values,
-                assignee: matches[2]
-            });
+    const handleOptionChange = (e, newVal) => {
+        setValues({
+            ...values,
+            assignee: newVal?._id || ''
+        });
+    }
+
+    const handleInputFieldChange = (e, newVal) => {
+        setInputFieldValue(newVal);
+        setValues({
+            ...values,
+            assignee: newVal
+        });
     }
 
     return (
@@ -120,6 +126,8 @@ function CreateTask({ projectId, cb }) {
                     onOpen={() => setOptionsOpen(true)}
                     onClose={() => setOptionsOpen(false)}
                     onChange={handleOptionChange}
+                    inputValue={inputFieldValue}
+                    onInputChange={handleInputFieldChange}
                     options={users}
                     loading={optionsLoading}
                     isOptionEqualToValue={(option, value) => option._id === value._id}

@@ -102,7 +102,6 @@ function CreateAccessRequest({ cb }) {
     const handleSubmit = async (e) => {
         setLoading(true);
         e.preventDefault();
-        console.log(values);
         const { data, error } = await raiseAccessRequest(values);
         if (data) {
             dispatch(updateNotificationState({

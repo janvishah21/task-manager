@@ -174,6 +174,7 @@ function Tasks() {
                 title="Create New Task"
                 fullWidth={true}
                 openPopup={popUpState.createTask}
+                showCloseBtn={true}
                 onClose={() => dispatch(updatePopUpState({ createTask: false }))}
             >
                 <CreateTask 
