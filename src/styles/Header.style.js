@@ -56,6 +56,8 @@ export const headerStyles = makeStyles(() => ({
       },
     },
     underDevelopment: {
+      position: 'absolute',
+      width: '100%',
       textAlign: 'center',
       textTransform: 'uppercase',
       background: `repeating-linear-gradient(
